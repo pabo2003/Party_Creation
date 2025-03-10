@@ -16,13 +16,13 @@
             <h1 class="title">Sign In</h1>
             <div class="input-field">
                 <i class="fas fa-user"></i>
-                <input type="text" placeholder="Username" name="username" id="usernameI" required>
+                <input type="text" placeholder="Email" name="email" id="emailI" required>
             </div>
             <div class="input-field">
                 <i class="fas fa-lock"></i>
                 <input type="password" placeholder="Password" name="password" id="passwordI" required>
             </div>
-            <input type="submit" value="Sign in" class="btn">
+            <input type="submit" value="Sign in" class="btn" id="loginBtn">
             <p class="social-text">Or Sign in with social platform</p>
             <div class="social-media">
                 <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
@@ -35,7 +35,7 @@
 
     <!-- Sign Up Form -->
     <div class="form-container sign-up">
-        <form action="AddUserServlet" method="post">
+        <form action="AddUserServlet" method="post" id="registerForm">
             <h1 class="title">Sign Up</h1>
             <div class="input-field">
                 <i class="fas fa-user"></i>
@@ -91,6 +91,7 @@
     </div>
 </div>
 
+<script src="../js/jquery.js"></script>
 <script>
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
@@ -102,6 +103,91 @@
 
     loginBtn.addEventListener('click', () => {
         container.classList.remove('active');
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        $("#registerForm").submit(function (event) {
+            event.preventDefault();
+
+            var userData = {
+                name: $("#usernameU").val(),
+                email: $("#emailU").val(),
+                password: $("#passwordU").val(),
+                confirmPassword: $("#confirmPasswordU").val(),
+                role: $("#role").val()
+            };
+
+            // Password confirmation check
+            if (userData.password !== userData.confirmPassword) {
+                alert("Passwords do not match!");
+                return;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/api/v1/user/register",
+                contentType: "application/json",
+                data: JSON.stringify(userData),
+                success: function (data) {
+                    alert("Registration Successful!");
+
+                    if (data.token) {
+                        localStorage.setItem("authToken", data.token);
+                    }
+
+                    if (userData.role === "Admin") {
+                        window.location.href = "dashboard.html";
+                    } else {
+                        window.location.href = "dashboard.html";
+                    }
+                },
+                error: function (xhr) {
+                    alert("Registration failed: " + xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.getElementById("loginBtn").addEventListener("click", function (event) {
+        event.preventDefault();
+
+        let email = document.getElementById("emailI").value;
+        let password = document.getElementById("passwordI").value;
+
+        if (email === "" || password === "") {
+            alert("Please enter both email and password.");
+            return;
+        }
+
+        let user = {
+            email: email,
+            password: password
+        };
+
+        fetch("http://localhost:8080/api/v1/auth/authenticate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code === 201) {
+                    localStorage.setItem("authToken", data.data.token);
+                    window.location.href = "view/dashboard.html";
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error during login:", error);
+                alert("Login failed. Please try again.");
+            });
     });
 </script>
 

@@ -1,6 +1,6 @@
 package lk.ijse.party_creation.advisor;
 
-import org.apache.tomcat.util.ResponseUtil;
+import lk.ijse.party_creation.util.ResponseUtil;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
