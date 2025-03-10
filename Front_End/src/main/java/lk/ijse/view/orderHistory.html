@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        table th, table td {
+            text-align: center;
+        }
+        .table-container {
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container table-container">
+    <h2 class="text-center">Order History</h2>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+        <tr>
+            <th>ID</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Item Code</th>
+            <th>Order ID</th>
+        </tr>
+        </thead>
+        <tbody id="orderTableBody"></tbody>
+    </table>
+    <button type="button" class="btn btn-dark w-20" onclick="goBack()">Back</button>
+</div>
+
+<!-- Bootstrap JS, Popper.js, and jQuery -->
+<script src="../js/jquery.js"></script>
+<script>
+    const getAllOrders = () => {
+        let tableBody = $('#orderTableBody');
+        $.ajax({
+            url: "http://localhost:8080/api/v1/order/getAll", // Change the endpoint to fetch orders
+            method: "GET",
+            dataType: "json",
+            success: (resp) => {
+                console.log("API Response:", resp);
+
+                tableBody.empty();
+
+                let orders = Array.isArray(resp) ? resp : resp.data;
+                if (!Array.isArray(orders)) {
+                    console.error("Invalid response format", resp);
+                    alert("Unexpected data format received from the server!");
+                    return;
+                }
+
+                orders.forEach(order => {
+                    tableBody.append(`
+                    <tr>
+                        <td>${order.id}</td>
+                        <td>${order.quantity}</td>
+                        <td>${order.total}</td>
+                        <td>${order.itemCode}</td>
+                        <td>${order.orderId}</td>
+                    </tr>
+                `);
+                });
+            },
+            error: (xhr, status, error) => {
+                console.error("Error fetching orders:", status, error, xhr.responseText);
+                alert("Error loading order data!");
+            }
+        });
+    };
+
+    // Call the function when the page loads
+    $(document).ready(() => {
+        getAllOrders();
+    });
+
+    function goBack() {
+        window.location.href = 'index.html';
+    }
+</script>
+</body>
+</html>

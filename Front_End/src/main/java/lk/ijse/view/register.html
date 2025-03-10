@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Signup - ForeverFloral</title>
+    <link rel="stylesheet" href="../Stylesheet/register.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
+
+<div class="container" id="container">
+    <!-- Sign In Form -->
+    <div class="form-container sign-in">
+        <form action="loginServlet" method="post">
+            <h1 class="title">Sign In</h1>
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Username" name="username" id="usernameI" required>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Password" name="password" id="passwordI" required>
+            </div>
+            <input type="submit" value="Sign in" class="btn">
+            <p class="social-text">Or Sign in with social platform</p>
+            <div class="social-media">
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Sign Up Form -->
+    <div class="form-container sign-up">
+        <form action="AddUserServlet" method="post">
+            <h1 class="title">Sign Up</h1>
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="Username" name="username" id="usernameU" required>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-envelope"></i>
+                <input type="email" placeholder="Email" name="email" id="emailU" required>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Password" name="password" id="passwordU" required>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-lock"></i>
+                <input type="password" placeholder="Confirm Password" name="confirmPassword" id="confirmPasswordU" required>
+            </div>
+            <div class="input-field">
+                <i class="fas fa-user"></i>
+                <input type="text" placeholder="User Or Admin" name="role" id="role" required>
+            </div>
+            <input type="submit" value="Sign up" class="btn">
+            <p class="social-text">Or Sign up with social platform</p>
+            <div class="social-media">
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-google"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Toggle Container -->
+    <div class="toggle-container">
+        <div class="toggle">
+            <div class="toggle-panel toggle-left">
+                <div class="content">
+                    <h3>Already a Member?</h3>
+                    <p>Welcome back! Sign in to access your personalized party plans, exclusive event themes, and tailored experiences to make your next celebration unforgettable.</p>
+                    <button class="hidden btn" id="login">Sign In</button>
+                </div>
+                <img src="../images/img_2.png" alt="" class="image">
+            </div>
+            <div class="toggle-panel toggle-right">
+                <div class="content">
+                    <h3>New to ForeverFloral?</h3>
+                    <p>Join us today to explore unique party themes, exclusive offers, and creative solutions to make every occasion extraordinary. Let’s create the perfect event together!</p>
+                    <button class="hidden btn" id="register">Sign Up</button>
+                </div>
+                <img src="../images/img_1.png" alt="" class="image">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const container = document.getElementById('container');
+    const registerBtn = document.getElementById('register');
+    const loginBtn = document.getElementById('login');
+
+    registerBtn.addEventListener('click', () => {
+        container.classList.add('active');
+    });
+
+    loginBtn.addEventListener('click', () => {
+        container.classList.remove('active');
+    });
+</script>
+
+</body>
+</html>

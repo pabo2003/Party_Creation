@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4">Place Order</h2>
+    <form id="orderForm">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="orderDate" class="form-label">Date</label>
+                <input type="date" id="orderDate" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label for="orderId" class="form-label">Order ID</label>
+                <input type="text" id="orderId" class="form-control">
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="itemCode" class="form-label">Choose Item Code</label>
+                <select id="itemCode" class="form-select">
+                    <option value="">Select Item</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="itemName" class="form-label">Item Name</label>
+                <input type="text" id="itemName" class="form-control" disabled>
+            </div>
+            <div class="col-md-4">
+                <label for="availableQty" class="form-label">Available Quantity</label>
+                <input type="number" id="availableQty" class="form-control" disabled>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="unitPrice" class="form-label">Unit Price</label>
+                <input type="text" id="unitPrice" class="form-control" disabled>
+            </div>
+            <div class="col-md-4">
+                <label for="phone" class="form-label">Choose Customer Phone</label>
+                <select id="phone" class="form-select">
+                    <option value="">Select Phone</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label for="customerName" class="form-label">Customer Name</label>
+                <input type="text" id="customerName" class="form-control" disabled>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="quantity" class="form-label">Quantity</label>
+                <input type="number" id="quantity" class="form-control">
+            </div>
+            <div class="col-md-4">
+                <label for="total" class="form-label">Total</label>
+                <input type="text" id="total" class="form-control" disabled>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-success" id="addToCart">Add to Cart</button>
+        <button type="reset" class="btn btn-warning">Clear</button>
+        <button type="button" class="btn btn-primary" id="placeOrder">Place Order</button>
+        <button type="button" class="btn btn-dark w-20" onclick="goBack()">Back</button>
+    </form>
+
+    <h3 class="mt-5">Cart</h3>
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody id="cartTableBody">
+        <!-- Cart items will be added here dynamically -->
+        </tbody>
+    </table>
+</div>
+<script src="../js/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    loadItemCodes();
+    loadCustomerPhones();
+
+    function loadItemCodes() {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/item/getItemCodes",
+            method: "GET",
+            dataType: "json",
+            success: (resp) => {
+                console.log("API Response:", resp); // Debugging
+
+                // Check if `resp.data` is an array
+                if (!Array.isArray(resp.data)) {
+                    console.error("Error: Response data is not an array", resp);
+                    return;
+                }
+
+                let itemDropdown = $("#itemCode");
+                itemDropdown.empty().append('<option value="">Select Item</option>');
+
+                // Loop through `resp.data`
+                resp.data.forEach(code => {
+                    itemDropdown.append(`<option value="${code}">${code}</option>`);
+                });
+            },
+            error: (err) => {
+                console.error("Error loading item codes:", err);
+            }
+        });
+    }
+
+    function loadCustomerPhones() {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/customer/getCustomerPhone",
+            method: "GET",
+            dataType: "json",
+            success: function (resp) {
+                console.log("API Response:", resp); // Debugging output
+
+                // Ensure `resp.data` exists and is an array
+                if (!resp.data || !Array.isArray(resp.data)) {
+                    console.error("Error: Response data is not an array", resp);
+                    return;
+                }
+
+                let phoneSelect = document.getElementById("phone");
+                phoneSelect.innerHTML = '<option value="">Select Phone</option>'; // Clear previous options
+
+                // Iterate over resp.data instead of resp
+                resp.data.forEach(phone => {
+                    let option = document.createElement("option");
+                    option.value = phone;
+                    option.textContent = phone;
+                    phoneSelect.appendChild(option);
+                });
+            },
+            error: function (error) {
+                console.error("Error loading customer phones:", error);
+            }
+        });
+    }
+
+    $("#phone").change(function () {
+        let selectedPhone = $(this).val();
+        if (selectedPhone) {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/customer/getCustomerByPhone/${selectedPhone}`,
+                method: "GET",
+                dataType: "json",
+                success: function (resp) {
+                    console.log("Customer Data Response:", resp); // Debugging output
+
+                    if (resp && resp.data) {
+                        console.log("Customer Name:", resp.data); // This should log the customer name
+                        $("#customerName").val(resp.data);  // Set the customer name directly
+                    } else {
+                        $("#customerName").val("");  // Clear input if no name found
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching customer details:", error);
+                }
+            });
+        } else {
+            console.log("No phone selected.");
+            $("#customerName").val("");  // Clear input if no phone selected
+        }
+    });
+
+    $("#itemCode").change(function () {
+        let selectedCode = $(this).val();
+        if (selectedCode) {
+            $.ajax({
+                url: `http://localhost:8080/api/v1/item/getItemByCode/${selectedCode}`, // API to get item details by code
+                method: "GET",
+                dataType: "json",
+                success: function (resp) {
+                    console.log("Item Data Response:", resp); // Debugging output
+                    if (resp && resp.data) {
+                        // Assuming the response contains item details like name, quantity, and price
+                        $("#itemName").val(resp.data.name); // Fill in item name
+                        $("#availableQty").val(resp.data.quantity); // Fill in available quantity
+                        $("#unitPrice").val(resp.data.price); // Fill in unit price
+                    } else {
+                        // Clear fields if no item found
+                        $("#itemName").val("");
+                        $("#availableQty").val("");
+                        $("#unitPrice").val("");
+                    }
+                },
+                error: function (error) {
+                    console.error("Error fetching item details:", error);
+                }
+            });
+        } else {
+            // Clear fields if no item code selected
+            $("#itemName").val("");
+            $("#availableQty").val("");
+            $("#unitPrice").val("");
+        }
+    });
+
+    // Declare an empty cart array
+    let cart = [];
+
+    $("#addToCart").click(function () {
+        const itemCode = $("#itemCode").val();
+        const itemName = $("#itemName").val();
+        const availableQty = parseInt($("#availableQty").val());
+        const unitPrice = parseFloat($("#unitPrice").val());
+        const quantity = parseInt($("#quantity").val());
+
+        if (!itemCode || !itemName || !unitPrice || !quantity) {
+            alert("Please fill in all the fields before adding to the cart.");
+            return;
+        }
+
+        if (quantity > availableQty) {
+            alert("Quantity exceeds available stock.");
+            return;
+        }
+
+        // Calculate the total price for this item
+        const itemTotal = unitPrice * quantity;
+
+        // Add item to cart
+        cart.push({
+            itemCode,
+            itemName,
+            quantity,
+            unitPrice,
+            total: itemTotal
+        });
+
+        // Update the cart table
+        updateCartTable();
+
+        // Update the total price
+        updateTotalPrice();
+    });
+
+    function updateCartTable() {
+        const cartTableBody = $("#cartTableBody");
+        cartTableBody.empty();
+
+        // Loop through the cart and display the items in the table
+        cart.forEach((item, index) => {
+            cartTableBody.append(`
+            <tr>
+                <td>${item.itemCode}</td>
+                <td>${item.itemName}</td>
+                <td>${item.quantity}</td>
+                <td>${item.total.toFixed(2)}</td>
+                <td><button class="btn btn-danger" onclick="removeFromCart(${index})">Remove</button></td>
+            </tr>
+        `);
+        });
+    }
+
+    function updateTotalPrice() {
+        const totalPrice = cart.reduce((sum, item) => sum + item.total, 0);
+        $("#total").val(totalPrice.toFixed(2));
+    }
+
+    function removeFromCart(index) {
+        // Remove item from the cart
+        cart.splice(index, 1);
+
+        // Update the cart table and total
+        updateCartTable();
+        updateTotalPrice();
+    }
+
+    $('#placeOrder').click(function () {
+        const orderId = $('#orderId').val();
+        const orderDate = $('#orderDate').val();
+        const customerId = $('#customerName').val();
+        const itemId = $('#itemCode').val();
+        const itemPrice = parseFloat($('#unitPrice').val());
+        const orderQuantity = parseInt($('#quantity').val());
+        const total = orderQuantity * itemPrice;
+
+        const orderData = {
+            orderId:orderId,
+            totalPrice: total,
+            date: orderDate,
+            customerId: customerId,
+            orderDetails: [
+                {
+                    itemCode: itemId, // Make sure this is a string if your DB uses VARCHAR for item ID
+                    quantity: orderQuantity,
+                    total: total
+                }
+            ]
+        };
+
+        console.log("Sending data:", JSON.stringify(orderData)); // Debugging
+
+        $.ajax({
+            url: "http://localhost:8080/api/v1/order/save",
+            method: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            data: JSON.stringify(orderData),
+
+            success: function (resp) {
+                alert(resp.msg);  // Show success message
+                console.log("Success:", resp);
+            },
+
+            error: function (xhr) {
+                try {
+                    let response = JSON.parse(xhr.responseText);
+                    alert("Error: " + response.message); // Show error message from backend
+                    console.log("Error:", response);
+                } catch (e) {
+                    alert("Unexpected error occurred!");
+                    console.log("Parsing error:", e);
+                }
+            }
+        });
+    });
+
+    function goBack() {
+        window.location.href = 'index.html';
+    }
+
+</script>
+</body>
+</html>
