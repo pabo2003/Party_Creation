@@ -31,13 +31,16 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @Override
     public int saveUser(UserDTO userDTO) {
         if (userRepo.existsByEmail(userDTO.getEmail())) {
-            return VarList.Not_Acceptable;
-        }else {
+            return VarList.Not_Acceptable;  // Email already exists
+        } else {
+            // Hash the password
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+            userDTO.setPassword(encodedPassword);  // Set the encoded password
 
+            // Save the user after mapping to the User entity
             userRepo.save(modelMapper.map(userDTO, User.class));
-            return VarList.Created;
+            return VarList.Created;  // User successfully created
         }
     }
 
@@ -46,19 +49,25 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         if (userRepo.existsByEmail(email)) {
             User user = userRepo.findByEmail(email);
             return modelMapper.map(user, UserDTO.class);
-        }else {
-            return null;
+        } else {
+            return null;  // Return null if user doesn't exist
         }
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
         return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), getAuthority(user));
     }
 
     public UserDTO loadUserDetailsByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
         return modelMapper.map(user, UserDTO.class);
     }
 
