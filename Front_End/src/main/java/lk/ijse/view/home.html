@@ -24,9 +24,10 @@
         <nav class="navBar">
             <a href="home.html">home</a>
             <a href="about.html">about</a>
-            <a href="protfolio.html">portfolio</a>
+            <a href="portfolio.html">portfolio</a>
             <a href="pricing.html">pricing</a>
             <a href="contact.html">contact</a>
+            <a href="login.html">logout</a>
         </nav>
 
         <div id="menu-btn" class="fas fa-bars">
@@ -38,7 +39,7 @@
     <section class="home">
         <div class="swiper home-slider">
            <div class="swiper-wrapper">
-               <div class="swiper-slide slide" style="background: url('../images/home1.jpg') no-repeat;">
+               <div id="slide1" class="swiper-slide slide">
                    <div class="content">
                        <h3>Plan Your Party!</h3>
                        <p>Ready to host the ultimate event? We’ll help you craft the perfect celebration with personalized themes, custom décor, and tailored entertainment. Let’s turn your vision into an unforgettable experience!</p>
@@ -46,7 +47,7 @@
                    </div>
                </div>
 
-               <div class="swiper-slide slide" style="background: url('../images/home2.jpg') no-repeat;">
+               <div id="slide2" class="swiper-slide slide" >
                    <div class="content">
                        <h3>Plan Your Party!</h3>
                        <p>Ready to host the ultimate event? We’ll help you craft the perfect celebration with personalized themes, custom décor, and tailored entertainment. Let’s turn your vision into an unforgettable experience!</p>
@@ -54,7 +55,7 @@
                    </div>
                </div>
 
-               <div class="swiper-slide slide" style="background: url('../images/home3.jpg') no-repeat;">
+               <div id="slide3" class="swiper-slide slide" >
                    <div class="content">
                        <h3>Plan Your Party!</h3>
                        <p>Ready to host the ultimate event? We’ll help you craft the perfect celebration with personalized themes, custom décor, and tailored entertainment. Let’s turn your vision into an unforgettable experience!</p>
@@ -62,6 +63,63 @@
                    </div>
                </div>
            </div>
+            <div class="swiper-pagination"></div>
+        </div>
+    </section>
+
+    <section class="services">
+        <h1 class="heading"> Our Services </h1>
+        <div class="swiper service-slider">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide slide">
+                    <img src="../images/photography.jpg" alt="">
+                    <div class="content">
+                        <h3>photography</h3>
+                        <p>"Capture the magic of your celebration with our expert photography services. From candid moments to beautifully composed shots, we create timeless memories that tell the unique story of your party. Let us turn your special day into a visual masterpiece, preserving every smile, every laugh, and every unforgettable moment."</p>
+                        <a href="about.html" class="btn">about us</a>
+                    </div>
+                </div>
+                <div class="swiper-slide slide">
+                    <img src="../images/weddingRegis.jpg" alt="">
+                    <div class="content">
+                        <h3>wedding registory</h3>
+                        <p>"Create the perfect gift list for your dream wedding with our easy-to-use wedding registry service. Whether it's elegant decor, kitchen essentials, or experiences you’ll cherish forever, our platform lets you curate a collection of items you love. Share your registry with family and friends, and let them help make your happily ever after a reality."</p>
+                        <a href="about.html" class="btn">about us</a>
+                    </div>
+                </div>
+                <div class="swiper-slide slide">
+                    <img src="../images/guestList.jpg" alt="">
+                    <div class="content">
+                        <h3>guest list</h3>
+                        <p>"Effortlessly manage your wedding guest list with our intuitive service. From sending invites to tracking RSVPs, we make it easy to stay organized. Customize seating arrangements, add personal notes, and ensure every guest feels special. Let us handle the details, so you can focus on celebrating your big day!"</p>
+                        <a href="about.html" class="btn">about us</a>
+                    </div>
+                </div>
+                <div class="swiper-slide slide">
+                    <img src="../images/weddingCake.jpg" alt="">
+                    <div class="content">
+                        <h3>wedding cake</h3>
+                        <p>"Indulge in a sweet slice of perfection with our bespoke wedding cake service. Crafted to match your theme and taste, each cake is a delicious masterpiece, designed to delight both the eyes and the palate. From elegant multi-tiered creations to unique, personalized designs, let us add a touch of sweetness to your unforgettable day!"</p>
+                        <a href="about.html" class="btn">about us</a>
+                    </div>
+                </div>
+                <div class="swiper-slide slide">
+                    <img src="../images/ceromony.jpg" alt="">
+                    <div class="content">
+                        <h3>wedding ceromony</h3>
+                        <p>"Create a magical wedding ceremony with our personalized service, ensuring every moment is flawless and meaningful. From vows to the final kiss, we handle the details, making your day as beautiful and unforgettable as your love story."</p>
+                        <a href="about.html" class="btn">about us</a>
+                    </div>
+                </div>
+                <div class="swiper-slide slide">
+                    <img src="../images/dining.jpg" alt="">
+                    <div class="content">
+                        <h3>fine dining</h3>
+                        <p>"Indulge in an unforgettable fine dining experience, with exquisite dishes and perfect pairings, crafted to elevate your wedding celebration and delight every guest."</p>
+                        <a href="about.html" class="btn">about us</a>
+                    </div>
+                </div>
+            </div>
             <div class="swiper-pagination"></div>
         </div>
     </section>
@@ -110,7 +168,9 @@
     </section>
 </div>
 
+<script src="../js/jquery.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
 <script>
     let menu = document.querySelector('#menu-btn');
     let navBar = document.querySelector('.header .navBar');
@@ -127,11 +187,32 @@
 
     var swiper = new Swiper(".home-slider", {
         loop:true,
-        spaceBetween:true,
+        spaceBetween:20,
         grabCursor:true,
         pagination: {
             el: ".swiper-pagination",
             clickable:true,
+        },
+    });
+
+    var swiper1 = new Swiper(".service-slider", {
+        loop:true,
+        spaceBetween:20,
+        grabCursor:true,
+        pagination: {
+            el: ".swiper-pagination",
+            clickable:true,
+        },
+        breakpoints: {
+            450: {
+                slidesPerView: 1,
+            },
+            768: {
+                slidesPerView: 2,
+            },
+            1000: {
+                slidesPerView: 3,
+            },
         },
     });
 </script>
