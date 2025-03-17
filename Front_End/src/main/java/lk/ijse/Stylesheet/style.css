@@ -358,6 +358,150 @@ section{
     object-fit: cover;
 }
 
+.pricing .box-container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(30rem,1fr));
+    gap: 1.5rem;
+}
+
+.pricing .box-container .box{
+    text-align: center;
+    border-radius: .5rem;
+    background: var(--transparent-white);
+    box-shadow: var(--box-shadow);
+    padding: 2rem;
+}
+
+.pricing .box-container .box h3{
+    font-size: 2rem;
+    text-transform: uppercase;
+    color: var(--black);
+}
+
+.pricing .box-container .box .price{
+    padding: 1rem;
+    border-radius: .5rem;
+    background: var(--pink);
+    color: var(--white);
+    font-size: 3rem;
+    margin: 1rem 0;
+}
+
+.pricing .box-container .box .list p{
+    font-size: 1.5rem;
+    color: var(--black);
+    padding: 1rem 0;
+}
+
+.pricing .box-container .box .list p i{
+    padding-right: .5rem;
+    color: var(--pink);
+}
+
+.reviews .slide{
+    margin-bottom: 4rem;
+    border-radius: .5rem;
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    padding: 2rem;
+    background: var(--transparent-white);
+    user-select: none;
+}
+
+.reviews .slide img{
+    height: 7rem;
+    width: 7rem;
+    border-radius: 50%;
+    margin-bottom: .5rem;
+}
+
+.reviews .slide h3{
+    font-size: 2rem;
+    color: var(--black);
+    text-transform: capitalize;
+}
+
+.reviews .slide p{
+    font-size: 1.5rem;
+    line-height: 2;
+    color: var(--black);
+    padding: 1rem 0;
+}
+
+.reviews .slide .stars{
+    margin-top: .5rem;
+}
+
+.reviews .slide .stars i{
+    font-size: 1.7rem;
+    color: darkmagenta;
+}
+
+.contact form{
+    padding: 2rem;
+    box-shadow: var(--box-shadow);
+    border-radius: .5rem;
+    background: var(--transparent-white);
+}
+
+.contact form .flex{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+.contact form .flex .inputBox{
+    flex: 1 1 41rem;
+}
+
+.contact form .flex .inputBox span{
+    display: block;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    color: var(--black);
+}
+
+.contact form .flex .inputBox input,
+.contact form .flex .inputBox textarea,
+.contact form .flex .inputBox select{
+    width: 100%;
+    padding: 1.2rem 1.4rem;
+    border: var(--border);
+    border-radius: .5rem;
+    font-size: 1.7rem;
+    background: var(--transparent-white);
+}
+
+.contact form .flex .inputBox textarea{
+    height: 20rem;
+    resize: none;
+}
+
+.contact form .btn{
+    margin-top: 2rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -544,6 +688,11 @@ section{
 
     .services .slide .content p{
         font-size: 1.3rem;
+    }
+
+    .contact form .btn{
+        display: block;
+        width: 100%;
     }
 
 }

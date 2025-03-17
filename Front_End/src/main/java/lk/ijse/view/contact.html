@@ -18,7 +18,7 @@
 <body>
 <div class="container">
   <section class="header">
-    <a href="" class="logo">Part Crreation</a>
+    <a href="" class="logo">Party Creation</a>
 
     <nav class="navBar">
       <a href="home.html">home</a>
@@ -26,7 +26,7 @@
       <a href="portfolio.html">portfolio</a>
       <a href="pricing.html">pricing</a>
       <a href="contact.html">contact</a>
-      <a href="login.html">logout</a>
+      <a href="register.html">logout</a>
     </nav>
 
     <div id="menu-btn" class="fas fa-bars">
@@ -35,8 +35,46 @@
 
   </section>
 
+  <section class="contact">
+    <h1 class="heading">contact us</h1>
 
-<section class="footer">
+    <form action="" method="post">
+      <div class="flex">
+        <div class="inputBox">
+          <span>your name</span>
+          <input type="text" placeholder="enter your name" name="name" required>
+        </div>
+        <div class="inputBox">
+          <span>your email</span>
+          <input type="text" placeholder="enter your email" name="email" required>
+        </div>
+        <div class="inputBox">
+          <span>your phone number</span>
+          <input type="text" placeholder="enter your phone number" name="phone number" required>
+        </div>
+        <div class="inputBox">
+          <span>choose plan</span>
+          <select name="plan" >
+            <option value="basic">basic plane</option>
+            <option value="premium">premium plane</option>
+            <option value="ultimate">ultimate plane</option>
+          </select>
+        </div>
+
+        <div class="inputBox">
+          <span>your address</span>
+          <textarea name="address" placeholder="enter your address" required cols="30" rows="10"></textarea>
+        </div>
+        <div class="inputBox">
+          <span>your message</span>
+          <textarea name="message" placeholder="enter your message" required cols="30" rows="10"></textarea>
+        </div>
+      </div>
+      <input type="submit" value="send message" name="send" class="btn">
+    </form>
+  </section>
+
+  <section class="footer">
   <div class="box-container">
     <div class="box">
       <h3>Quick links</h3>

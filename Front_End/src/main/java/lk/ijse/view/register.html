@@ -147,9 +147,9 @@
                     }
 
                     if (userData.role === "Admin") {
-                        window.location.href = "dashboard.html";
+                        window.location.href = "adminDashboard.html";
                     } else {
-                        window.location.href = "dashboard.html";
+                        window.location.href = "home.html";
                     }
                 },
                 error: function (xhr) {
@@ -190,7 +190,13 @@
             .then(data => {
                 if (data.code === 201) {
                     localStorage.setItem("authToken", data.data.token);
-                    window.location.href = "dashboard.html";
+                    let userRole = data.data.role;  // Assuming the response contains the user's role
+
+                    if (userRole === "Admin") {
+                        window.location.href = "adminDashboard.html"; // Redirect to Admin dashboard
+                    } else {
+                        window.location.href = "home.html"; // Redirect to Home page
+                    }
                 } else {
                     alert(data.message);
                 }
