@@ -4,6 +4,7 @@ package lk.ijse.party_creation.controller;
 import lk.ijse.party_creation.dto.AuthDTO;
 import lk.ijse.party_creation.dto.ResponseDTO;
 import lk.ijse.party_creation.dto.UserDTO;
+import lk.ijse.party_creation.entity.User;
 import lk.ijse.party_creation.service.Impl.UserServiceImpl;
 import lk.ijse.party_creation.util.JwtUtil;
 import lk.ijse.party_creation.util.VarList;
@@ -59,6 +60,36 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDTO(VarList.Created, "Success", authDTO));
+    }
+
+    @CrossOrigin
+    @GetMapping
+    public ResponseEntity<ResponseDTO> checkRole(@RequestParam String email) {
+        User user = userService.findByEmail(email);
+
+        ResponseDTO response = new ResponseDTO();
+
+        if (user != null) {
+            if ("Admin".equals(user.getRole())) {
+                response.setCode(200);  // Success code
+                response.setMessage("User is Admin.");
+                response.setData("Admin");
+            } else if ("User".equals(user.getRole())) {
+                response.setCode(200);  // Success code
+                response.setMessage("User is a regular User.");
+                response.setData("User");
+            } else {
+                response.setCode(404);  // Not Found
+                response.setMessage("Role not found.");
+                response.setData(null);
+            }
+        } else {
+            response.setCode(404);  // Not Found
+            response.setMessage("Email not found.");
+            response.setData(null);
+        }
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

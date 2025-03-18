@@ -76,4 +76,8 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         authorities.add(new SimpleGrantedAuthority(user.getRole()));
         return authorities;
     }
+
+    public User findByEmail(String email) {
+        return userRepo.findByEmail(email);
+    }
 }
