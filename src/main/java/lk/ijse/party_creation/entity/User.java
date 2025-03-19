@@ -15,8 +15,8 @@ import java.util.UUID;
 @Data
 public class User implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int userId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID userId;
 
     private String name;
     private String email;

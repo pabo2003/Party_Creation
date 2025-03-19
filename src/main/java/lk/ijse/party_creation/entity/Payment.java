@@ -16,11 +16,10 @@ public class Payment {
     private int paymentID;
 
     @OneToOne
-    @JoinColumn(name = "orderID", nullable = false)
+    @JoinColumn(name = "orderID", nullable = false, referencedColumnName = "orderID")
     private Order order;
 
     private int userID;
     private String paymentMethod;
     private Double amount;
-
 }

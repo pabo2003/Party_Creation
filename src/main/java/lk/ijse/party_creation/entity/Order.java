@@ -3,7 +3,9 @@ package lk.ijse.party_creation.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Table(name = "order")
+import java.util.List;
+
+@Table(name = "`order`")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter

@@ -16,10 +16,10 @@ public class OrderDetail {
     private int orderDetailID;
 
     @ManyToOne
-    @JoinColumn(name = "orderID", nullable = false)
+    @JoinColumn(name = "orderID", nullable = false, referencedColumnName = "orderID")
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "productID", nullable = false)
+    @JoinColumn(name = "productID", nullable = false, referencedColumnName = "productID")
     private Product product;
 }

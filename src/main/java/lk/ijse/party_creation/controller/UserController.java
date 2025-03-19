@@ -6,8 +6,10 @@ import lk.ijse.party_creation.dto.UserDTO;
 import lk.ijse.party_creation.service.UserService;
 import lk.ijse.party_creation.util.JwtUtil;
 import lk.ijse.party_creation.util.VarList;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,8 +26,26 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
+    @GetMapping(value = "/getUser")
+    @PreAuthorize("user")
+    public ResponseEntity<ResponseDTO> getUser(@PathVariable String email) {
+        System.out.println("Getjdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
+        UserDTO userDTO = userService.searchUser(email);
+        System.out.println("ndsfisjdifsn"+userDTO.getUserId());
+        if (userDTO == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(VarList.Not_Found, "User Not Found", null));
+        }
+        return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Success", userDTO));
+    }
+
+
     @PostMapping(value = "/register")
-    public ResponseEntity<ResponseDTO> registerUser(@RequestBody @Validated UserDTO userDTO) {
+    public ResponseEntity<ResponseDTO> registerUser(@RequestBody  UserDTO userDTO) {
+        System.out.println("Register");
+        System.out.println("gggggggggggggggggggggggggggggggggggggggg"+userDTO.getEmail());
+        System.out.println(userDTO.getRole());
+        System.out.println(userDTO.getName());
         try {
             int res = userService.saveUser(userDTO);
             switch (res) {

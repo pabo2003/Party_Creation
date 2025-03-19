@@ -14,7 +14,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("*")
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
@@ -62,7 +62,6 @@ public class AuthController {
                 .body(new ResponseDTO(VarList.Created, "Success", authDTO));
     }
 
-    @CrossOrigin
     @GetMapping
     public ResponseEntity<ResponseDTO> checkRole(@RequestParam String email) {
         User user = userService.findByEmail(email);

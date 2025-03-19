@@ -11,31 +11,30 @@
 
 <div class="container" id="container">
 
-    <!-- Sign Up Form (this will be active by default) -->
     <div class="form-container sign-up ">
-        <form action="AddUserServlet" method="post" id="registerForm">
+        <form id="registerForm">
             <h1 class="title">Sign Up</h1>
             <div class="input-field">
                 <i class="fas fa-user"></i>
-                <label for="usernameU"></label><input type="text" placeholder="Username" name="username" id="usernameU" required>
+                <label for="usernameU"></label><input type="text" placeholder="Username" name="usernameU" id="usernameU" required>
             </div>
             <div class="input-field">
                 <i class="fas fa-envelope"></i>
-                <label for="emailU"></label><input type="email" placeholder="Email" name="email" id="emailU" required>
+                <label for="emailU"></label><input type="email" placeholder="Email" name="emailU" id="emailU" required>
             </div>
             <div class="input-field">
                 <i class="fas fa-lock"></i>
-                <label for="passwordU"></label><input type="password" placeholder="Password" name="password" id="passwordU" required>
+                <label for="passwordU"></label><input type="password" placeholder="Password" name="passwordU" id="passwordU" required>
             </div>
             <div class="input-field">
                 <i class="fas fa-lock"></i>
-                <label for="confirmPasswordU"></label><input type="password" placeholder="Confirm Password" name="confirmPassword" id="confirmPasswordU" required>
+                <label for="confirmPasswordU"></label><input type="password" placeholder="Confirm Password" name="confirmPasswordU" id="confirmPasswordU" required>
             </div>
             <div class="input-field">
                 <i class="fas fa-user"></i>
                 <label for="role"></label><input type="text" placeholder="User Or Admin" name="role" id="role" required>
             </div>
-            <input type="submit" value="Sign up" class="btn">
+            <button type="submit" class="btn" onclick="registerButton()">Sign up</button>
             <p class="social-text">Or Sign up with social platform</p>
             <div class="social-media">
                 <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
@@ -45,9 +44,8 @@
             </div>
         </form>
     </div>
-    <!-- Sign In Form -->
     <div class="form-container sign-in active">
-        <form action="loginServlet" method="post">
+        <form>
             <h1 class="title">Sign In</h1>
             <div class="input-field">
                 <i class="fas fa-user"></i>
@@ -68,7 +66,6 @@
         </form>
     </div>
 
-    <!-- Toggle Container (optional if you want to switch between Sign Up and Sign In) -->
     <div class="toggle-container">
         <div class="toggle">
             <div class="toggle-panel toggle-left">
@@ -92,6 +89,8 @@
 </div>
 
 <script src="../js/jquery.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+
 <script>
     const container = document.getElementById('container');
     const registerBtn = document.getElementById('register');
@@ -104,98 +103,129 @@
     loginBtn.addEventListener('click', () => {
         container.classList.remove('active');
     });
-</script>
 
-<script>
     $(document).ready(function () {
         $("#registerForm").submit(function (event) {
             event.preventDefault();
 
-            var userData = {
-                name: $("#usernameU").val(),
-                email: $("#emailU").val(),
-                password: $("#passwordU").val(),
-                confirmPassword: $("#confirmPasswordU").val(),
-                role: $("#role").val()
-            };
+            const name = $("#usernameU").val()
+            const email = $("#emailU").val()
+            const password = $("#passwordU").val()
+            const confirmPassword = $("#confirmPasswordU").val()
+            const role = $("#role").val()
 
-            // Password confirmation check
-            if (userData.password !== userData.confirmPassword) {
+            const user = {
+                name: name,
+                email: email,
+                password: password,
+                role: role
+            }
+
+            if (password !== confirmPassword) {
                 alert("Passwords do not match!");
-                return;
+                return false;
             }
-
-            // Basic validation for empty fields
-            for (let key in userData) {
-                if (userData[key] === "") {
-                    alert(key + " cannot be empty!");
-                    return;
-                }
-            }
-
+            //ajax request
             $.ajax({
                 type: "POST",
                 url: "http://localhost:8080/api/v1/user/register",
                 contentType: "application/json",
-                data: JSON.stringify(userData),
-                success: function (data) {
-                    console.log(data);  // Debug the data
+                data: JSON.stringify({
+                    name: name,
+                    email: email,
+                    password: password,
+                    role: role
+                }),
+                success: function (response) {
+                    console.log(response);
                     alert("Registration Successful!");
-
-                    if (data.token) {
-                        localStorage.setItem("authToken", data.token);
-                    }
-
-                    if (userData.role === "Admin") {
-                        window.location.href = "adminDashboard.html";
-                    } else {
-                        window.location.href = "home.html";
-                    }
+                    localStorage.setItem("authToken", response.data.token);
+                    window.location.href = "register.html";
                 },
-                error: function (xhr) {
-                    console.log(xhr.responseText);  // Log the response
-                    alert("Registration failed: " + xhr.responseText);
+                error: function (xhr, status, error) {
+                    console.log(xhr.responseText);
+                    alert("Registration Failed!");
                 }
             });
+
+
+
         });
     });
-
-</script>
-
-<script>
     document.getElementById("loginBtn").addEventListener("click", function (event) {
         event.preventDefault();
 
-        let email = document.getElementById("emailI").value;
-        let password = document.getElementById("passwordI").value;
+        const email = $("#emailI").val();
+        const password = $("#passwordI").val();
 
-        if (email === "" || password === "") {
+        // Validate email and password
+        if (!email || !password) {
             alert("Please enter both email and password.");
             return;
         }
 
-        // Check email for role (Admin or User)
-        fetch("http://localhost:8080/api/v1/auth/checkRole?email=" + encodeURIComponent(email))
-            .then(response => response.json())
-            .then(data => {
-                if (data.code === 200) {
-                    if (data.data === "Admin") {
-                        // If email belongs to Admin, redirect to Admin Dashboard
-                        window.location.href = "adminDashboard.html";
-                    } else if (data.data === "User") {
-                        // If email belongs to User, redirect to Home page
-                        window.location.href = "home.html";
-                    }
-                } else {
-                    alert(data.message);
-                }
-            })
-            .catch(error => {
-                console.error("Error checking role:", error);
-                alert("Error during login. Please try again.");
-            });
+        // Send login request
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/api/v1/auth/authenticate",
+            contentType: "application/json",
+            data: JSON.stringify({
+                email: email,
+                password: password
+            }),
+            success: function (response) {
+                console.log(response);
+                alert("Login Successful!");
+
+                // Store the token in localStorage
+                localStorage.setItem("token", response.data.token);
+                window.location.href = "adminDashboard.html";
+
+                // Fetch user details
+/*
+                getUser(email);
+*/
+            },
+            error: function (xhr, status, error) {
+                console.log(xhr.responseText);
+                alert("Login Failed: " + xhr.responseText);
+            }
+        });
     });
 
+    function getUser(email) {
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/user/getUser/${email}`,
+            method: 'GET',
+            async: true,
+            headers: {
+                Authorization: 'Bearer '+ localStorage.getItem("token")
+            },
+
+            success: function (response) {
+                console.log(response);
+
+                // Redirect based on user role
+                if (response.data.role === "admin") {
+                    console.log("Redirecting to admin dashboard");
+                    window.location.href = "adminDashboard.html";
+                } else {
+                    console.log("Redirecting to home page");
+                    window.location.href = "home.html";
+                }
+            },
+            error: function (xhr, status, error) {
+
+                alert("Failed to fetch user details: " + xhr.responseText);
+            }
+        });
+    }
+
+
+    function login(){
+
+    }
 </script>
 
 </body>
