@@ -14,7 +14,6 @@ import java.util.List;
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private int productID;
 
     @Column(nullable = false)
@@ -32,8 +31,10 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
-    @Column(nullable = false)
-    private String image;
+    private String fileName;
+    private String filetype;
+    @Lob
+    private byte[] data;
 
     @OneToMany(mappedBy = "product")
     private List<OrderDetail> orderDetails;

@@ -14,11 +14,11 @@ public class WebAppConfig implements WebMvcConfigurer {
         return new ModelMapper();
     }
 
-    @Override
+    /*@Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")  // Allow cross-origin requests to all endpoints
                 .allowedOrigins("http://localhost:3000")  // Allow frontend (replace with your frontend URL)
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Allow these HTTP methods
                 .allowedHeaders("*");  // Allow all headers
-    }
+    }*/
 }

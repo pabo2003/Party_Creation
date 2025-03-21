@@ -56,12 +56,15 @@ public class AuthController {
 
         AuthDTO authDTO = new AuthDTO();
         authDTO.setEmail(loadedUser.getEmail());
+        authDTO.setEmail(loadedUser.getRole());
         authDTO.setToken(token);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(new ResponseDTO(VarList.Created, "Success", authDTO));
     }
+}
 
+/*
     @GetMapping
     public ResponseEntity<ResponseDTO> checkRole(@RequestParam String email) {
         User user = userService.findByEmail(email);
@@ -93,3 +96,4 @@ public class AuthController {
 
 }
 
+*/

@@ -82,7 +82,7 @@
     <h1>Add New Product</h1>
     <form id="addProductForm">
         <label for="productID">Product ID:</label>
-        <input type="number" id="productID" name="productID" placeholder="Enter Product ID" required>
+        <input type="number" id="productID" name="productID" placeholder="Enter Product ID" readonly>
 
         <label for="productName">Product Name:</label>
         <input type="text" id="productName" name="name" placeholder="Enter product name" required>
@@ -102,38 +102,54 @@
         <label for="image">Product Image:</label>
         <input id="image" type="file" name="image" class="form-control" accept="image/*">
 
-        <button type="submit" class="btn" onclick="saveProduct()">Add Product</button><br><br>
-        <button type="submit" class="btn" onclick="updateProduct()">Update Product</button><br><br>
-        <button type="submit" class="btn" onclick="deleteProduct()">Delete Product</button><br><br>
+
+        <button type="button" class="btn" onclick="saveProduct()">Add Product</button><br><br>
+        <button type="button" class="btn" onclick="updateProduct()">Update Product</button><br><br>
+        <button type="button" class="btn" onclick="deleteProduct()">Delete Product</button><br><br>
         <a href="adminDashboard.html" class="btn">Back to Dashboard</a>
     </form>
 </div>
-
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="../js/jquery.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script>
     /*----------------------------------Save Product----------------------------------*/
     function saveProduct() {
-        let product = {
-            name: $('#productName').val(),
-            category: $('#category').val(),
-            price: $('#price').val(),
-            stock: $('#stock').val(),
-            description: $('#description').val(),
-            image: $('#image')[0].val()
-        };
+
+        const productID = $('#productID').val();
+        const name = $('#productName').val();
+        const description = $('#description').val();
+        const category = $('#category').val();
+        const price = $('#price').val();
+        const stock = $('#stock').val();
+        const image = $('#image')[0].files[0];
+
+
+        const formData = new FormData();
+        formData.append('file', image);
+        formData.append('productDTO', new Blob([JSON.stringify({
+            productID: productID,
+            name: name,
+            description: description,
+            category: category,
+            price: price,
+            stock: stock
+        })], { type: 'application/json' }));
+
+        console.log(productID, name, description, category, price, stock, image);
 
         $.ajax({
             url: "http://localhost:8080/api/v1/products/save",
             method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(product),
+            data: formData,
+            processData: false,
+            contentType: false,
             success: function (response) {
-                alert("Product Saved Successfully!");
+                console.log(response);
+                Swal.fire('Success', 'Product saved successfully!', 'success');
             },
             error: function (xhr, status, error) {
-                console.error("Save error:", status, error, xhr.responseText);
-                alert("Error saving product!");
+                Swal.fire('Error', 'Failed to save product: ' + xhr.responseText, 'error');
             }
         });
     }

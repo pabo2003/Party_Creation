@@ -51,6 +51,7 @@ public class WebSecurityConfig {
                                 "/api/v1/auth/authenticate",
                                 "/api/v1/user/register",
                                 "/api/v1/auth/refreshToken",
+                                "/api/v1/products/save",
                                 "/api/v1/auth/checkRole",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

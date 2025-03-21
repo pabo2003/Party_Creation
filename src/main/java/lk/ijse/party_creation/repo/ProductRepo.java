@@ -14,9 +14,9 @@ public interface ProductRepo extends JpaRepository<Product,Integer>{
     List<String> getProductIds();
 
 
-    @Query("SELECT new lk.ijse.party_creation.dto.ProductDTO(i.productID, i.name, i.category, i.price, i.stock, i.description, i.image) FROM Product i WHERE i.productID = :code")
-    List<ProductDTO> findProductById(@Param("code") int productId);
-
+    /*  @Query("SELECT new lk.ijse.party_creation.dto.ProductDTO(i.productID, i.name, i.category, i.price, i.stock, i.description, i.image) FROM Product i WHERE i.productID = :code")
+      List<ProductDTO> findProductById(@Param("code") int productId);
+  */
     @Modifying
     @Query("UPDATE Product SET stock = stock - :quantity where productID = :code")
     void updateQty(String code, int quantity);

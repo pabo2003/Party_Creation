@@ -10,7 +10,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 @CrossOrigin("*")
@@ -25,19 +31,37 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping(value = "/save")
-    public ResponseEntity<ResponseDTO> saveProduct(@RequestBody ProductDTO productDTO) {
-        ResponseDTO response = null;
+    @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ResponseDTO> saveProduct(
+            @RequestPart("productDTO") ProductDTO productDTO,
+            @RequestParam("file") MultipartFile file) {
+        System.out.println("Hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh   Badu Awooo");
         try {
-            ProductDTO saveProduct = productService.saveProduct(productDTO);
-            ResponseDTO responseDTO = new ResponseDTO(200, "Product saved successfully", saveProduct);
-            return ResponseEntity.ok(responseDTO);
-        }catch (Exception e) {
-            ResponseDTO responseDTO = new ResponseDTO(500, "An error occurred: " + e.getMessage(), null);
-            return ResponseEntity.status(500).body(responseDTO);
+            if (!file.isEmpty()) {
+                // Save the file to a directory
+                Path filePath = Paths.get(System.getProperty("user.dir") + "/src/main/resources/static/" + file.getOriginalFilename());
+                Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                System.out.println("File uploaded successfully.");
+                productDTO.setImage(file.getOriginalFilename());
+            }
+
+            int res = productService.saveProduct(productDTO, file);
+            switch (res) {
+                case VarList.Created:
+                    return ResponseEntity.status(HttpStatus.CREATED)
+                            .body(new ResponseDTO(VarList.OK, "Product saved successfully", productDTO));
+                default:
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ResponseDTO(VarList.INTERNAL_SERVER_ERROR, "Failed to save product", null));
+            }
+        } catch (IOException e) {
+            System.out.println("Error uploading file: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Error uploading file", null));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
-
     @PutMapping(value = "update")
     public ResponseEntity<ResponseDTO> updateProduct(@PathVariable int productID,@RequestBody ProductDTO productDTO) {
         ProductDTO updatedProduct = productService.updateProduct(productID, productDTO);

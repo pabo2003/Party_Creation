@@ -13,7 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin("*")
+@CrossOrigin
 @RestController
 @RequestMapping("api/v1/user")
 public class UserController {
@@ -26,9 +26,8 @@ public class UserController {
         this.jwtUtil = jwtUtil;
     }
 
-    @GetMapping(value = "/getUser")
-    @PreAuthorize("user")
-    public ResponseEntity<ResponseDTO> getUser(@PathVariable String email) {
+    @GetMapping("/getUser")
+    public ResponseEntity<ResponseDTO> getUser(@RequestParam String email) {
         System.out.println("Getjdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd");
         UserDTO userDTO = userService.searchUser(email);
         System.out.println("ndsfisjdifsn"+userDTO.getUserId());
@@ -53,6 +52,7 @@ public class UserController {
                     String token = jwtUtil.generateToken(userDTO);
                     AuthDTO authDTO = new AuthDTO();
                     authDTO.setEmail(userDTO.getEmail());
+                    authDTO.setRole(userDTO.getRole());
                     authDTO.setToken(token);
                     return ResponseEntity.status(HttpStatus.CREATED)
                             .body(new ResponseDTO(VarList.Created, "Success", authDTO));
