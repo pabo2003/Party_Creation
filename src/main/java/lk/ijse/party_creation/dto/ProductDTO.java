@@ -1,12 +1,12 @@
 package lk.ijse.party_creation.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Getter
+@Setter
 public class ProductDTO {
     private int productID;
     private String name;

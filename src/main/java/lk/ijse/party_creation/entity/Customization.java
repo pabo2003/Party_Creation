@@ -13,20 +13,22 @@ import java.io.Serializable;
 @Setter
 @Data
 public class Customization implements Serializable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int customID;
 
-    @ManyToOne
-    @JoinColumn(name = "orderID", nullable = false, referencedColumnName = "orderID")
-    private Order order; // Many customizations can belong to one order
+    @Column(unique = true, nullable = false)
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "userID", nullable = false, referencedColumnName = "userID")
-    private User user; // Many customizations can belong to one user
+    @Column(nullable = false)
+    private String name;
 
-    private String text; // Custom text for the order
-    private String image; // Custom image for the order
-    private String fontStyle; // Font style used for custom text
+    @Column(nullable = false)
+    private String address;
+
+    @Column(nullable = false)
+    private String phone;
+
+    @Column(nullable = false)
+    private String NICNumber;
 }

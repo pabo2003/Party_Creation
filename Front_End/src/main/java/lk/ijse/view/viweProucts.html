@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffe6f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .table-container {
+            background-color: #ffccdd;
+            border: 2px solid #ff99bb;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 80%;
+        }
+
+        .table-container h1 {
+            font-size: 1.5rem;
+            color: #ff6699;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 1rem;
+        }
+
+        table thead {
+            background-color: #ff99bb;
+        }
+
+        table th, table td {
+            border: 1px solid #ff99bb;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            color: white;
+            background-color: #ff6699;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #ffe6f0;
+        }
+
+        table tr:hover {
+            background-color: #ffccd9;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #ff66a3;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .btn:hover {
+            background-color: #e05590;
+        }
+
+        .no-products {
+            font-size: 1.2rem;
+            color: #ff6699;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<div class="table-container">
+    <h1>Product Details</h1>
+    <!-- The following table will only be shown if there is data.
+         Since we don't have dynamic data, we'll mock some example rows. -->
+    <table>
+        <thead>
+        <tr>
+            <th>Product ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Description</th>
+            <th>Quantity</th>
+            <th>Category</th>
+            <th>Image</th>
+        </tr>
+        </thead>
+        <tbody id="productTableBody">
+        <!-- Example product rows. These would be dynamically generated from server-side code. -->
+        <tr>
+            <td>101</td>
+            <td>Product A</td>
+            <td>$20.00</td>
+            <td>A great product.</td>
+            <td>50</td>
+            <td>Electronics</td>
+            <td><img src="" alt="Product A" width="50" height="50"></td>
+        </tr>
+        <tr>
+            <td>102</td>
+            <td>Product B</td>
+            <td>$15.99</td>
+            <td>Another awesome product.</td>
+            <td>75</td>
+            <td>Clothing</td>
+            <td><img src="" alt="Product B" width="50" height="50"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <p class="text-center no-products">No products found. Please add products to see them listed here.</p>
+
+    <a href="adminDashboard.html" class="btn">Back to Dashboard</a>
+</div>
+</body>
+</html>

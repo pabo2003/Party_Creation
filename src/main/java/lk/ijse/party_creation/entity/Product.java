@@ -14,14 +14,25 @@ import java.util.List;
 @Entity
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private int productID;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String category;
+
+    @Column(nullable = false)
     private double price;
+
+    @Column(nullable = false)
     private int stock;
+
+    @Column(nullable = false)
     private String description;
+
+    @Column(nullable = false)
     private String image;
 
     @OneToMany(mappedBy = "product")
