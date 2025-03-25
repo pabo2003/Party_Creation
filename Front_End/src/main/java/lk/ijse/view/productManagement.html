@@ -82,7 +82,7 @@
     <h1>Add New Product</h1>
     <form id="addProductForm">
         <label for="productID">Product ID:</label>
-        <input type="number" id="productID" name="productID" placeholder="Enter Product ID" readonly>
+        <input type="number" id="productID" name="productID" placeholder="Enter Product ID" required>
 
         <label for="productName">Product Name:</label>
         <input type="text" id="productName" name="name" placeholder="Enter product name" required>
@@ -155,7 +155,7 @@
     }
 
     /*----------------------------------Update Product----------------------------------*/
-    function updateProduct() {
+    /*function updateProduct() {
         let product = {
             id: $('#productID').val(),
             name: $('#productName').val(),
@@ -179,7 +179,50 @@
                 alert("Error updating product!");
             }
         });
+
+    }*/
+    function updateProduct() {
+        let productID = $('#productID').val();
+        const name = $('#productName').val();
+        const description = $('#description').val();
+        const category = $('#category').val();
+        const price = $('#price').val();
+        const stock = $('#stock').val();
+
+        const image = $('#image')[0].files[0];
+
+        const formData = new FormData();
+        if (image) {
+            formData.append('file', image);
+        }
+
+        formData.append('productDTO', new Blob([JSON.stringify({
+            productID: productID,
+            name: name,
+            description: description,
+            category: category,
+            price: price,
+            stock: stock
+        })], { type: 'application/json' }));
+
+        console.log(productID, name, description, category, price, stock, image);
+        $.ajax({
+            url: "http://localhost:8080/api/v1/products/update",
+            method: "PUT",
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log(response);
+                Swal.fire('Success', 'Product updated successfully!', 'success');
+            },
+            error: function (xhr, status, error) {
+                console.error("Update error:", status, error, xhr.responseText);
+                Swal.fire('Error', 'Failed to update product: ' + xhr.responseText, 'error');
+            }
+        });
     }
+
 
     /*----------------------------------Delete Product----------------------------------*/
     function deleteProduct() {

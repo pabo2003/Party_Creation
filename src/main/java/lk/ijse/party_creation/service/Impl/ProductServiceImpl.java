@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import lk.ijse.party_creation.dto.ProductDTO;
 import lk.ijse.party_creation.entity.Product;
 import lk.ijse.party_creation.repo.ProductRepo;
+import lk.ijse.party_creation.repo.UserRepo;
 import lk.ijse.party_creation.service.ProductService;
 import lk.ijse.party_creation.util.VarList;
 import org.modelmapper.ModelMapper;
@@ -14,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,6 +25,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ModelMapper modelMapper;
+    @Autowired
+    private UserRepo userRepo;
 
 
     @Override
@@ -44,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 
 
 
-            return VarList.Created; // Return success code
+            return VarList.Created;
         } catch (Exception e) {
             throw new RuntimeException("Failed to save product: " + e.getMessage(), e);
         }
@@ -52,17 +56,46 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public int deleteProduct(int productID) {
-        productRepo.deleteById(productID);
-        return productID;
+        if (userRepo.existsById(String.valueOf(productID))){
+            productRepo.deleteById(productID);
+            return VarList.OK;
+        }else {
+            return VarList.Not_Found;
+        }
     }
 
     @Override
-    public ProductDTO updateProduct(int productID, ProductDTO productDTO) {
-        Product existingProduct = productRepo.findById(productID)
+    public int updateProduct( ProductDTO productDTO ,MultipartFile file) {
+        /*Product existingProduct = productRepo.findById(productID)
                 .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productID));
         modelMapper.map(productDTO, existingProduct);
         Product updatedProduct = productRepo.save(existingProduct);
-        return modelMapper.map(updatedProduct, ProductDTO.class);
+        return modelMapper.map(updatedProduct, ProductDTO.class);*/
+        try{
+            if(productRepo.existsById(productDTO.getProductID())) {
+                Product product = productRepo.findById(productDTO.getProductID())
+                        .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productDTO.getProductID()));
+                if (file != null && !file.isEmpty()) {
+                    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+                    product.setFileName(fileName);
+                    product.setFiletype(file.getContentType());
+                    product.setData(file.getBytes());
+                }
+
+                product.setName(productDTO.getName());
+                product.setPrice(productDTO.getPrice());
+                product.setStock(productDTO.getStock());
+                product.setCategory(productDTO.getCategory());
+                product.setDescription(productDTO.getDescription());
+
+                productRepo.save(product);
+                return VarList.OK;
+            }else {
+                return VarList.Not_Found;
+            }
+        }catch (Exception e){
+            throw new RuntimeException("Failed to update product: " + e.getMessage(), e);
+        }
     }
 
     @Override

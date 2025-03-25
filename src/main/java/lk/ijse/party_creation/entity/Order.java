@@ -5,7 +5,7 @@ import lombok.*;
 
 import java.util.List;
 
-@Table(name = "`order`")
+@Table(name = "`orders`")
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -17,14 +17,22 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int orderID;
 
-    private int userID;
+    @ManyToOne
+    @JoinColumn(name = "customID", nullable = false)
+    private Customization customization;
+
+    @Column(nullable = false)
     private String orderDate;
+
+    @Column(nullable = false)
     private double totalAmount;
+
+    @Column(nullable = false)
     private String status;
 
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
 
-    @OneToOne(mappedBy = "order")
-    private Payment payment;
+  /*  @OneToOne(mappedBy = "order")
+    private Payment payment;*/
 }

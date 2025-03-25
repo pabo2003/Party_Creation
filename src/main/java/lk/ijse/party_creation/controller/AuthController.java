@@ -1,6 +1,5 @@
 package lk.ijse.party_creation.controller;
 
-
 import lk.ijse.party_creation.dto.AuthDTO;
 import lk.ijse.party_creation.dto.ResponseDTO;
 import lk.ijse.party_creation.dto.UserDTO;
@@ -14,7 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin
+@CrossOrigin("*")
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
@@ -22,14 +21,12 @@ public class AuthController {
     private final JwtUtil jwtUtil;
     private final AuthenticationManager authenticationManager;
     private final UserServiceImpl userService;
-    private final ResponseDTO responseDTO;
 
     //constructor injection
     public AuthController(JwtUtil jwtUtil, AuthenticationManager authenticationManager, UserServiceImpl userService, ResponseDTO responseDTO) {
         this.jwtUtil = jwtUtil;
         this.authenticationManager = authenticationManager;
         this.userService = userService;
-        this.responseDTO = responseDTO;
     }
 
     @PostMapping("/authenticate")

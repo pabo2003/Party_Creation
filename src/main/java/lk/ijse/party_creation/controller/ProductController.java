@@ -3,7 +3,6 @@ package lk.ijse.party_creation.controller;
 import lk.ijse.party_creation.dto.ProductDTO;
 import lk.ijse.party_creation.dto.ResponseDTO;
 import lk.ijse.party_creation.service.ProductService;
-import lk.ijse.party_creation.util.ResponseUtil;
 import lk.ijse.party_creation.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,15 +26,13 @@ public class ProductController {
     @Autowired
     private final ProductService productService;
 
+
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<ResponseDTO> saveProduct(
-            @RequestPart("productDTO") ProductDTO productDTO,
-            @RequestParam("file") MultipartFile file) {
-        System.out.println("Hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh   Badu Awooo");
+    public ResponseEntity<ResponseDTO> saveProduct(@RequestPart("productDTO") ProductDTO productDTO, @RequestParam("file") MultipartFile file) {
         try {
             if (!file.isEmpty()) {
                 // Save the file to a directory
@@ -62,11 +59,43 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
-    @PutMapping(value = "update")
-    public ResponseEntity<ResponseDTO> updateProduct(@PathVariable int productID,@RequestBody ProductDTO productDTO) {
-        ProductDTO updatedProduct = productService.updateProduct(productID, productDTO);
-        ResponseDTO response = new ResponseDTO(200, "Product updated successfully", updatedProduct);
-        return ResponseEntity.ok(response);
+    @PutMapping(value = "/update")
+    public ResponseEntity<ResponseDTO> updateProduct(@RequestBody ProductDTO productDTO,@RequestParam("file") MultipartFile file) {
+        System.out.println("id: " + productDTO.getProductID());
+
+        try{
+            if (!file.isEmpty()) {
+                Path filePath = Paths.get(System.getProperty("user.dir") + "/src/main/resources/static/" + file.getOriginalFilename());
+                try {
+                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+                    System.out.println("File uploaded successfully.");
+                }catch (IOException e) {
+                    System.out.println("Error uploading file: " + e.getMessage());
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                           .body(new ResponseDTO(VarList.INTERNAL_SERVER_ERROR, "Error uploading file", null));
+                }
+                productDTO.setImage(file.getOriginalFilename());
+            }
+            int res = productService.updateProduct(productDTO,file);
+
+            switch (res) {
+                case VarList.OK:
+                    System.out.println("product updated");
+                    return ResponseEntity.ok(new ResponseDTO(VarList.OK, "product Updated Successfully", null));
+                case VarList.Not_Found:
+                    System.out.println("product not found");
+                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                            .body(new ResponseDTO(VarList.Not_Found, "product Not Found", null));
+                default:
+                    System.out.println("Error updating product");
+                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .body(new ResponseDTO(VarList.Internal_Server_Error, "Error updating product", null));
+            }
+        }catch (Exception e) {
+            System.out.println("Exception occurred: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Internal Server Error", null));
+        }
     }
 
     @DeleteMapping("delete/{productID}")
@@ -83,13 +112,8 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    /*@GetMapping("getProductIds")
-    public ResponseUtil getProductIds() {
-        return new ResponseUtil(200,"Get All Item Codes",productService.getProductIds());
-    }*/
 
-
-    @GetMapping("getItemByCode/{productID}")
+    @GetMapping("getProductByCode/{productID}")
     public ResponseEntity<ResponseDTO> getProductById(@PathVariable int productID) {
         ProductDTO product = productService.getProductById(productID);
         ResponseDTO response = new ResponseDTO(200, "Product fetched successfully", product);

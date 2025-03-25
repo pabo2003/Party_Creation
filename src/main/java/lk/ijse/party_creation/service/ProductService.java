@@ -8,7 +8,7 @@ import java.util.List;
 public interface ProductService {
     public int saveProduct(ProductDTO product, MultipartFile file);
     public int deleteProduct(int productID);
-    public ProductDTO updateProduct(int productID, ProductDTO productDTO);
+    public int updateProduct(ProductDTO productDTO , MultipartFile file);
     public ProductDTO getProductById(int productID);
     public List<ProductDTO> getAllProducts();
 }

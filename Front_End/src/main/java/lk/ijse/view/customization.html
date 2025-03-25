@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Product</title>
+  <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #ffe6f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #ff66a3;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-right: 5px;
+      margin-bottom: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    input[type="file"] {
+      padding: 5px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 10px 20px;
+      margin: 10px;
+      font-size: 16px;
+      color: #fff;
+      background-color: #ff66a3;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .btn:hover {
+      background-color: #e05590;
+    }
+
+    .card-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Customization</h1>
+  <form id="addProductForm">
+    <label for="customerID">Customer ID:</label>
+    <input type="number" id="customerID" name="customerID" placeholder="Enter Customer ID" required>
+
+    <label for="productName">Product Name:</label>
+    <input type="text" id="productName" name="name" placeholder="Enter product name" required>
+
+    <label for="category">Category:</label>
+    <input type="text" id="category" name="category" placeholder="Enter product category" required>
+
+    <label for="price">Price:</label>
+    <input type="number" id="price" name="price" placeholder="Enter product price" required>
+
+    <label for="stock">Stock:</label>
+    <input type="number" id="stock" name="stock" placeholder="Enter product stock" required>
+
+    <label for="description">Description:</label>
+    <textarea id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
+
+    <label for="image">Product Image:</label>
+    <input id="image" type="file" name="image" class="form-control" accept="image/*">
+
+
+    <button type="button" class="btn" onclick="saveProduct()">Add Product</button><br><br>
+    <button type="button" class="btn" onclick="updateProduct()">Update Product</button><br><br>
+    <button type="button" class="btn" onclick="deleteProduct()">Delete Product</button><br><br>
+    <a href="adminDashboard.html" class="btn">Back to Dashboard</a>
+  </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+<script>
+  /*----------------------------------Save Product----------------------------------*/
+  function saveProduct() {
+
+    const productID = $('#productID').val();
+    const name = $('#productName').val();
+    const description = $('#description').val();
+    const category = $('#category').val();
+    const price = $('#price').val();
+    const stock = $('#stock').val();
+    const image = $('#image')[0].files[0];
+
+
+    const formData = new FormData();
+    formData.append('file', image);
+    formData.append('productDTO', new Blob([JSON.stringify({
+      productID: productID,
+      name: name,
+      description: description,
+      category: category,
+      price: price,
+      stock: stock
+    })], { type: 'application/json' }));
+
+    console.log(productID, name, description, category, price, stock, image);
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/products/save",
+      method: "POST",
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function (response) {
+        console.log(response);
+        Swal.fire('Success', 'Product saved successfully!', 'success');
+      },
+      error: function (xhr, status, error) {
+        Swal.fire('Error', 'Failed to save product: ' + xhr.responseText, 'error');
+      }
+    });
+  }
+
+  /*----------------------------------Update Product----------------------------------*/
+  /*function updateProduct() {
+      let product = {
+          id: $('#productID').val(),
+          name: $('#productName').val(),
+          category: $('#category').val(),
+          price: $('#price').val(),
+          stock: $('#stock').val(),
+          description: $('#description').val(),
+          image: $('#image')[0].val()
+      };
+
+      $.ajax({
+          url: "http://localhost:8080/api/v1/products/update",
+          method: "PUT",
+          contentType: "application/json",
+          data: JSON.stringify(product),
+          success: function (response) {
+              alert("Product Updated Successfully!");
+          },
+          error: function (xhr, status, error) {
+              console.error("Update error:", status, error, xhr.responseText);
+              alert("Error updating product!");
+          }
+      });
+
+  }*/
+  function updateProduct() {
+    // Get form data from input fields
+    const productID = $('#productID').val();
+    const name = $('#productName').val();
+    const description = $('#description').val();
+    const category = $('#category').val();
+    const price = $('#price').val();
+    const stock = $('#stock').val();
+
+    // Get the image file from the file input
+    const image = $('#image')[0].files[0];  // Access the first file selected (if any)
+
+    // Create a FormData object to append the image and JSON data
+    const formData = new FormData();
+    if (image) {
+      formData.append('file', image);  // Append the image file
+    }
+
+    // Append the product details as JSON (converted to Blob)
+    formData.append('productDTO', new Blob([JSON.stringify({
+      productID: productID,
+      name: name,
+      description: description,
+      category: category,
+      price: price,
+      stock: stock
+    })], { type: 'application/json' }));
+
+    // Log data for debugging
+    console.log(productID, name, description, category, price, stock, image);
+
+    // Send the AJAX request with FormData (multipart/form-data)
+    $.ajax({
+      url: "http://localhost:8080/api/v1/products/update/{id}",
+      method: "PUT",
+      data: formData,
+      processData: false,  // Important: Do not process data (FormData)
+      contentType: false,  // Important: Let the browser set content type
+      success: function (response) {
+        console.log(response);
+        // Show success message with SweetAlert
+        Swal.fire('Success', 'Product updated successfully!', 'success');
+      },
+      error: function (xhr, status, error) {
+        console.error("Update error:", status, error, xhr.responseText);
+        // Show error message with SweetAlert
+        Swal.fire('Error', 'Failed to update product: ' + xhr.responseText, 'error');
+      }
+    });
+  }
+
+
+  /*----------------------------------Delete Product----------------------------------*/
+  function deleteProduct() {
+    let productId = $('#productID').val();
+
+    $.ajax({
+      url: "http://localhost:8080/api/v1/products/delete/" + productId,
+      method: "DELETE",
+      success: function (response) {
+        alert("Product Deleted Successfully!");
+      },
+      error: function (xhr, status, error) {
+        console.error("Delete error:", status, error, xhr.responseText);
+        alert("Error deleting product!");
+      }
+    });
+  }
+</script>
+</body>
+</html>

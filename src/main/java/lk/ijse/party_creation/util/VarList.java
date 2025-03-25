@@ -56,4 +56,5 @@ public class VarList {
     public static final int Not_Extended = 510;
     public static final int Network_Authentication_Required = 511;
     public static final int INTERNAL_SERVER_ERROR = 500;
+    public static int NotFound = 404;
 }

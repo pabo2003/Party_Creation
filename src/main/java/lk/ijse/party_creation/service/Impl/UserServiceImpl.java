@@ -55,6 +55,28 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public int updateUser(UserDTO userDTO) {
+      /*  try {
+            User user = userRepo.findByEmail(userDTO.getEmail());
+            if (user!= null) {
+                if (userDTO.getPassword()!= null) {
+                    BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+                    String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+                    user.setPassword(encodedPassword);
+                }
+
+                userRepo.save(modelMapper.map(userDTO, User.class));
+                return VarList.No_Content;
+            } else {
+                return VarList.NotFound;
+            }
+        }catch (Exception e) {
+            throw new RuntimeException("Error updating user: " + e.getMessage(), e);
+        }*/
+        return 0;
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
         if (user == null) {
