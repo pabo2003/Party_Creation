@@ -277,10 +277,10 @@
 <script>
     /*----------------------------------Save Customer----------------------------------*/
     function saveCustomer() {
-        const customId = document.getElementById('name').value;
+        const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
-        const nicNumber =$('#nicNumber').val();
+        const nicNumber = document.getElementById('nicNumber').value;
         const address = document.getElementById('address').value;
 
         $.ajax({
@@ -290,7 +290,7 @@
             dataType: 'json',
             async: true,
             data: JSON.stringify({
-                customId: customId,
+                name: name,
                 email: email,
                 phone: phone,
                 nicNumber: nicNumber,
