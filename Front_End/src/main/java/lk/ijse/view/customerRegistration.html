@@ -280,7 +280,7 @@
         const customId = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         const phone = document.getElementById('phone').value;
-        const nicNumber = document.getElementById('nicNumber').value;
+        const nicNumber =$('#nicNumber').val();
         const address = document.getElementById('address').value;
 
         $.ajax({
@@ -296,8 +296,11 @@
                 nicNumber: nicNumber,
                 address: address
             }),
+            /*headers: {
+                'Authorization': 'Bearer '+ localStorage.getItem("token")
+            },*/
             success: function(response) {
-                if (response.success) {
+                if (response.code === 201) {
                     Swal.fire({
                         title: 'Registration Successful!',
                         text: 'You have successfully registered!',

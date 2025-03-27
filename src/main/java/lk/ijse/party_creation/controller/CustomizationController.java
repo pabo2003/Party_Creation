@@ -58,7 +58,7 @@ public class CustomizationController {
             switch (res){
                 case VarList.Created:
                     System.out.println("customer saved");
-                    return ResponseEntity.ok(new ResponseDTO(VarList.Created, "customer Saved Successfully", null));
+                    return ResponseEntity.ok(new ResponseDTO(VarList.Created, "customer Saved Successfully", customizationDTO1));
                 case VarList.Not_Found:
                     System.out.println("customer not found");
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)
