@@ -65,22 +65,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public int updateProduct( ProductDTO productDTO ,MultipartFile file) {
-        /*Product existingProduct = productRepo.findById(productID)
-                .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productID));
-        modelMapper.map(productDTO, existingProduct);
-        Product updatedProduct = productRepo.save(existingProduct);
-        return modelMapper.map(updatedProduct, ProductDTO.class);*/
+    public int updateProduct( ProductDTO productDTO) {
         try{
             if(productRepo.existsById(productDTO.getProductID())) {
                 Product product = productRepo.findById(productDTO.getProductID())
                         .orElseThrow(() -> new RuntimeException("Product not found with ID: " + productDTO.getProductID()));
-                if (file != null && !file.isEmpty()) {
-                    String fileName = StringUtils.cleanPath(file.getOriginalFilename());
-                    product.setFileName(fileName);
-                    product.setFiletype(file.getContentType());
-                    product.setData(file.getBytes());
-                }
 
                 product.setName(productDTO.getName());
                 product.setPrice(productDTO.getPrice());

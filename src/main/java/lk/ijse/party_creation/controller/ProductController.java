@@ -59,29 +59,18 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
-    @PutMapping(value = "/update")
-    public ResponseEntity<ResponseDTO> updateProduct(@RequestBody ProductDTO productDTO,@RequestParam("file") MultipartFile file) {
+    @PostMapping(value = "/update")
+    public ResponseEntity<ResponseDTO> updateProduct(@RequestBody ProductDTO productDTO) {
         System.out.println("id: " + productDTO.getProductID());
+        System.out.println("fucking update product");
 
         try{
-            if (!file.isEmpty()) {
-                Path filePath = Paths.get(System.getProperty("user.dir") + "/src/main/resources/static/" + file.getOriginalFilename());
-                try {
-                    Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-                    System.out.println("File uploaded successfully.");
-                }catch (IOException e) {
-                    System.out.println("Error uploading file: " + e.getMessage());
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                           .body(new ResponseDTO(VarList.INTERNAL_SERVER_ERROR, "Error uploading file", null));
-                }
-                productDTO.setImage(file.getOriginalFilename());
-            }
-            int res = productService.updateProduct(productDTO,file);
+            int res = productService.updateProduct(productDTO);
 
             switch (res) {
                 case VarList.OK:
                     System.out.println("product updated");
-                    return ResponseEntity.ok(new ResponseDTO(VarList.OK, "product Updated Successfully", null));
+                    return ResponseEntity.ok(new ResponseDTO(VarList.OK, "product Updated Successfully", productDTO));
                 case VarList.Not_Found:
                     System.out.println("product not found");
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)

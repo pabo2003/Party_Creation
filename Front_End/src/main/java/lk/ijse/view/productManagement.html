@@ -181,46 +181,82 @@
         });
 
     }*/
+    /*   function updateProduct() {
+           let productID = $('#productID').val();
+           const name = $('#productName').val();
+           const description = $('#description').val();
+           const category = $('#category').val();
+           const price = $('#price').val();
+           const stock = $('#stock').val();
+
+           const image = $('#image')[0].files[0];
+
+           const formData = new FormData();
+           if (image) {
+               formData.append('file', image);
+           }
+
+           formData.append('productDTO', new Blob([JSON.stringify({
+               productID: productID,
+               name: name,
+               description: description,
+               category: category,
+               price: price,
+               stock: stock
+           })], { type: 'application/json' }));
+
+           console.log(productID, name, description, category, price, stock, image);
+           $.ajax({
+               url: "http://localhost:8080/api/v1/products/update",
+               method: "PUT",
+               data: formData,
+               processData: false,
+               contentType: false,
+               success: function (response) {
+                   console.log(response);
+                   Swal.fire('Success', 'Product updated successfully!', 'success');
+               },
+               error: function (xhr, status, error) {
+                   console.error("Update error:", status, error, xhr.responseText);
+                   Swal.fire('Error', 'Failed to update product: ' + xhr.responseText, 'error');
+               }
+           });
+       }
+   */
     function updateProduct() {
-        let productID = $('#productID').val();
+
+        const productID = $('#productID').val();
         const name = $('#productName').val();
         const description = $('#description').val();
         const category = $('#category').val();
         const price = $('#price').val();
         const stock = $('#stock').val();
 
-        const image = $('#image')[0].files[0];
+        console.log(description, category, price, stock)
 
-        const formData = new FormData();
-        if (image) {
-            formData.append('file', image);
-        }
-
-        formData.append('productDTO', new Blob([JSON.stringify({
-            productID: productID,
-            name: name,
-            description: description,
-            category: category,
-            price: price,
-            stock: stock
-        })], { type: 'application/json' }));
-
-        console.log(productID, name, description, category, price, stock, image);
+        console.log(productID, name, description, category, price, stock);
         $.ajax({
             url: "http://localhost:8080/api/v1/products/update",
-            method: "PUT",
-            data: formData,
-            processData: false,
-            contentType: false,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({
+                productID:productID,
+                name:name,
+                category:category,
+                price:price,
+                stock:stock,
+                description:description
+            }),
+
             success: function (response) {
-                console.log(response);
                 Swal.fire('Success', 'Product updated successfully!', 'success');
+
             },
             error: function (xhr, status, error) {
                 console.error("Update error:", status, error, xhr.responseText);
                 Swal.fire('Error', 'Failed to update product: ' + xhr.responseText, 'error');
             }
-        });
+        })
     }
 
 
