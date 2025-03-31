@@ -85,28 +85,19 @@
     <label for="customerID">Customer ID:</label>
     <input type="number" id="customerID" name="customerID" placeholder="Enter Customer ID" required>
 
-    <label for="productName">Product Name:</label>
-    <input type="text" id="productName" name="name" placeholder="Enter product name" required>
+    <label for="customerName">Customer Name:</label>
+    <input type="text" id="customerName" name="name" placeholder="Enter Your name" required>
 
-    <label for="category">Category:</label>
-    <input type="text" id="category" name="category" placeholder="Enter product category" required>
+    <label for="email">Email:</label>
+    <input type="text" id="email" name="email" placeholder="Enter your email" required>
 
-    <label for="price">Price:</label>
-    <input type="number" id="price" name="price" placeholder="Enter product price" required>
+    <label for="address">Address:</label>
+    <input type="text" id="address" name="address" placeholder="Enter address" required>
 
-    <label for="stock">Stock:</label>
-    <input type="number" id="stock" name="stock" placeholder="Enter product stock" required>
+    <label for="phone">Phone Number:</label>
+    <input type="number" id="phone" name="phone" placeholder="Enter product stock" required>
 
-    <label for="description">Description:</label>
-    <textarea id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
-
-    <label for="image">Product Image:</label>
-    <input id="image" type="file" name="image" class="form-control" accept="image/*">
-
-
-    <button type="button" class="btn" onclick="saveProduct()">Add Product</button><br><br>
-    <button type="button" class="btn" onclick="updateProduct()">Update Product</button><br><br>
-    <button type="button" class="btn" onclick="deleteProduct()">Delete Product</button><br><br>
+    <button type="button" class="btn" onclick="saveProduct()">Submit</button><br><br>
     <a href="adminDashboard.html" class="btn">Back to Dashboard</a>
   </form>
 </div>
@@ -117,71 +108,38 @@
   /*----------------------------------Save Product----------------------------------*/
   function saveProduct() {
 
-    const productID = $('#productID').val();
-    const name = $('#productName').val();
-    const description = $('#description').val();
-    const category = $('#category').val();
-    const price = $('#price').val();
-    const stock = $('#stock').val();
-    const image = $('#image')[0].files[0];
+    const customerId = $('#customerID').val();
+    const name = $('#customerName').val();
+    const email = $('#email').val();
+    const address = $('#category').val();
+    const phone = $('#phone').val();
 
-
-    const formData = new FormData();
-    formData.append('file', image);
-    formData.append('productDTO', new Blob([JSON.stringify({
-      productID: productID,
-      name: name,
-      description: description,
-      category: category,
-      price: price,
-      stock: stock
-    })], { type: 'application/json' }));
-
-    console.log(productID, name, description, category, price, stock, image);
+    console.log(customerId, name, email, address, phone);
 
     $.ajax({
       url: "http://localhost:8080/api/v1/products/save",
       method: "POST",
-      data: formData,
-      processData: false,
-      contentType: false,
-      success: function (response) {
-        console.log(response);
-        Swal.fire('Success', 'Product saved successfully!', 'success');
-      },
-      error: function (xhr, status, error) {
-        Swal.fire('Error', 'Failed to save product: ' + xhr.responseText, 'error');
+      contentType: "application/json",
+      async: true,
+      data: JSON.stringify({
+        customerID: customerId,
+        name: name,
+        email: email,
+        address: address,
+        phone: phone
+      }),
+      success: function(response) {
+        console.log(response)
+        Swal.fire({
+          title: 'Product Saved!',
+          text: 'successfully saved!',
+          icon:'success',
+        });
       }
     });
   }
 
   /*----------------------------------Update Product----------------------------------*/
-  /*function updateProduct() {
-      let product = {
-          id: $('#productID').val(),
-          name: $('#productName').val(),
-          category: $('#category').val(),
-          price: $('#price').val(),
-          stock: $('#stock').val(),
-          description: $('#description').val(),
-          image: $('#image')[0].val()
-      };
-
-      $.ajax({
-          url: "http://localhost:8080/api/v1/products/update",
-          method: "PUT",
-          contentType: "application/json",
-          data: JSON.stringify(product),
-          success: function (response) {
-              alert("Product Updated Successfully!");
-          },
-          error: function (xhr, status, error) {
-              console.error("Update error:", status, error, xhr.responseText);
-              alert("Error updating product!");
-          }
-      });
-
-  }*/
   function updateProduct() {
     // Get form data from input fields
     const productID = $('#productID').val();
@@ -250,6 +208,11 @@
       }
     });
   }
+
+  /*----------------------------------Send Email to Customer----------------------------------*/
+
+
+
 </script>
 </body>
 </html>

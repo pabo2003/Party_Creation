@@ -25,7 +25,7 @@
       <a href="about.html">about</a>
       <a href="portfolio.html">portfolio</a>
       <a href="pricing.html">pricing</a>
-      <a href="contact.html">contact</a>
+      <a href="contact.html">Plan Your Event With Us</a>
       <a href="register.html">logout</a>
     </nav>
 
@@ -43,46 +43,41 @@
         <div class="inputBox">
           <span>your name</span>
           <label>
-            <input type="text" placeholder="enter your name" name="name" required>
+            <input type="text" placeholder="enter your name" name="name" id="name" required>
           </label>
         </div>
         <div class="inputBox">
           <span>your email</span>
           <label>
-            <input type="text" placeholder="enter your email" name="email" required>
+            <input type="text" placeholder="enter your email" name="email" id="email" required>
+          </label>
+        </div>
+        <div class="inputBox">
+          <span>your address</span>
+          <label>
+            <input type="text" placeholder="enter your address" name="address" id="address" required>
           </label>
         </div>
         <div class="inputBox">
           <span>your phone number</span>
           <label>
-            <input type="text" placeholder="enter your phone number" name="phone number" required>
+            <input type="text" placeholder="enter your phone number" name="phone number" id="phone" required>
           </label>
         </div>
         <div class="inputBox">
-          <span>choose plan</span>
+          <span>your NIC number</span>
           <label>
-            <select name="plan" >
-              <option value="basic">basic plane</option>
-              <option value="premium">premium plane</option>
-              <option value="ultimate">ultimate plane</option>
-            </select>
-          </label>
-        </div>
-
-        <div class="inputBox">
-          <span>your address</span>
-          <label>
-            <textarea name="address" placeholder="enter your address" required cols="30" rows="10"></textarea>
+            <input type="text" placeholder="enter your NIC number" name="NIC number" id="nicNumber" required>
           </label>
         </div>
         <div class="inputBox">
           <span>your message</span>
           <label>
-            <textarea name="message" placeholder="enter your message" required cols="30" rows="10"></textarea>
+            <textarea name="message" id="message" placeholder="enter your message" required cols="30" rows="10"></textarea>
           </label>
         </div>
       </div>
-      <input type="submit" value="send message" name="send" class="btn">
+      <button type="button" class="formbold-btn btn" onclick="submitApplication()">Submit</button>
     </form>
   </section>
 
@@ -138,6 +133,41 @@
   menu.onclick = () =>{
     menu.classList.toggle('fa-times');
     navBar.classList.toggle('active')
+  }
+
+  /*----------------------------------Save Category----------------------------------*/
+  function submitApplication() {
+    const name = $("#name").val();
+    const email = $("#email").val();
+    const address = $("#address").val();
+    const phone = $("#phone").val();
+    const nicNumber = $("#nicNumber").val();
+    const message = $("#message").val();
+
+    console.log(name, email, address, phone, nicNumber, message);
+
+    $.ajax({
+      url: 'http://localhost:8080/api/v1/applications/save',
+      method: 'POST',
+      contentType: 'application/json',
+      async: true,
+      data: JSON.stringify({
+        name: name,
+        email: email,
+        address: address,
+        phone: phone,
+        nicNumber: nicNumber,
+        message: message
+      }),
+      success: function(response) {
+        console.log(response);
+        alert('Application submitted successfully!');
+      },
+      error: function(error) {
+        console.log(error);
+        alert('Failed to submit application!');
+      }
+    })
   }
 </script>
 </body>

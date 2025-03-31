@@ -162,6 +162,24 @@
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             background: rgba(255,255,255,.3);
         }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #ff66a3;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .btn:hover {
+            background-color: #e05590;
+        }
     </style>
 </head>
 <body>
@@ -266,7 +284,8 @@
                 </label>
             </div>
 
-            <button type="button" class="formbold-btn" onclick="saveCustomer()">Register Now</button>
+            <button type="button" class="formbold-btn btn" onclick="saveCustomer()">Register Now</button>
+            <a href="adminDashboard.html" class="btn">Back to Dashboard</a>
         </form>
     </div>
 </div>
@@ -296,9 +315,7 @@
                 nicNumber: nicNumber,
                 address: address
             }),
-            /*headers: {
-                'Authorization': 'Bearer '+ localStorage.getItem("token")
-            },*/
+
             success: function(response) {
                 if (response.code === 201) {
                     Swal.fire({

@@ -4,17 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.UUID;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UserDTO {
-    private UUID userId;
+public class ContactDTO {
     private String name;
     private String email;
-    private String password;
-    private String role;
-/*    private boolean verified;
-    private String verificationCode;*/
+    private String address;
+    private String phone;
+    private String nicNumber;
+    private String message;
 }

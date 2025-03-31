@@ -56,11 +56,11 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public int deleteProduct(int productID) {
-        if (userRepo.existsById(String.valueOf(productID))){
+        if (!productRepo.existsById(productID)){
+           return VarList.Not_Found;
+        }else {
             productRepo.deleteById(productID);
             return VarList.OK;
-        }else {
-            return VarList.Not_Found;
         }
     }
 

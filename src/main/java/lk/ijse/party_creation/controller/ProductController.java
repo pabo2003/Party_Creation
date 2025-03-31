@@ -62,8 +62,6 @@ public class ProductController {
     @PostMapping(value = "/update")
     public ResponseEntity<ResponseDTO> updateProduct(@RequestBody ProductDTO productDTO) {
         System.out.println("id: " + productDTO.getProductID());
-        System.out.println("fucking update product");
-
         try{
             int res = productService.updateProduct(productDTO);
 
