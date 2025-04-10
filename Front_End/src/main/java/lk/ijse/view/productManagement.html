@@ -5,69 +5,137 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-pink: #ff69b4;
+            --light-pink: #ffb6c1;
+            --pale-pink: #ffe4e1;
+            --dark-pink: #db7093;
+            --soft-pink: #fff0f5;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background-color: #ffe6f2;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--soft-pink);
             margin: 0;
             padding: 0;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .container {
             width: 90%;
-            max-width: 600px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            max-width: 700px;
+            margin: 30px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
+            border: 1px solid var(--light-pink);
         }
 
         h1 {
-            color: #ff66a3;
+            color: var(--dark-pink);
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
+            font-size: 28px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary-pink), var(--dark-pink));
+            border-radius: 3px;
         }
 
         form {
             display: flex;
             flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
         }
 
         label {
-            margin: 10px 0 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark-pink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        input, textarea {
+        label i {
+            font-size: 14px;
+            color: var(--primary-pink);
+        }
+
+        input, textarea, select {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            padding: 12px 15px;
+            border: 1px solid var(--light-pink);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--primary-pink);
+            box-shadow: 0 0 0 3px rgba(255, 105, 180, 0.2);
+            outline: none;
         }
 
         input[type="file"] {
-            padding: 5px;
+            padding: 10px;
+            background-color: var(--pale-pink);
+        }
+
+        .btn-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
         }
 
         .btn {
-            display: inline-block;
-            padding: 10px 20px;
-            margin: 10px;
+            padding: 12px 20px;
             font-size: 16px;
-            color: #fff;
-            background-color: #ff66a3;
+            font-weight: 600;
+            color: white;
+            background-color: var(--primary-pink);
             border: none;
-            border-radius: 4px;
+            border-radius: 8px;
             cursor: pointer;
             text-decoration: none;
             text-align: center;
-            line-height: 1.5;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn:hover {
-            background-color: #e05590;
+            background-color: var(--dark-pink);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.3);
+        }
+
+        .btn i {
+            font-size: 14px;
         }
 
         .card-content {
@@ -75,47 +143,130 @@
             flex-wrap: wrap;
             justify-content: center;
         }
+
+        /* File input styling */
+        .file-input-container {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-button {
+            background-color: var(--pale-pink);
+            color: var(--dark-pink);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px dashed var(--primary-pink);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .file-input-button:hover {
+            background-color: var(--light-pink);
+        }
+
+        .file-input-button i {
+            font-size: 18px;
+        }
+
+        #image {
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .file-name {
+            margin-top: 5px;
+            font-size: 13px;
+            color: var(--dark-pink);
+            font-style: italic;
+        }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Add New Product</h1>
+    <h1><i class="fas fa-plus-circle"></i> Product Management</h1>
     <form id="addProductForm">
-        <label for="productID">Product ID:</label>
-        <input type="number" id="productID" name="productID" placeholder="Enter Product ID" required>
+        <div class="form-group">
+            <label for="productID"><i class="fas fa-barcode"></i>Product ID:</label>
+            <input type="number" id="productID" name="productID" placeholder="Enter Product ID" required>
+        </div>
 
-        <label for="productName">Product Name:</label>
-        <input type="text" id="productName" name="name" placeholder="Enter product name" required>
+        <div class="form-group">
+            <label for="productName"><i class="fas fa-tag"></i>Product Name:</label>
+            <input type="text" id="productName" name="name" placeholder="Enter product name" required>
+        </div>
 
-        <label for="category">Category:</label>
-        <input type="text" id="category" name="category" placeholder="Enter product category" required>
+        <div class="form-group">
+            <label for="category"><i class="fas fa-list"></i>Category:</label>
+            <input type="text" id="category" name="category" placeholder="Enter product category" required>
+        </div>
 
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" placeholder="Enter product price" required>
+        <div class="form-group">
+            <label for="price"><i class="fas fa-dollar-sign"></i>Price:</label>
+            <input type="number" id="price" name="price" placeholder="Enter product price" required>
+        </div>
 
-        <label for="stock">Stock:</label>
-        <input type="number" id="stock" name="stock" placeholder="Enter product stock" required>
+        <div class="form-group">
+            <label for="stock"><i class="fas fa-boxes"></i>Stock:</label>
+            <input type="number" id="stock" name="stock" placeholder="Enter product stock" required>
+        </div>
 
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
+        <div class="form-group">
+            <label for="description"><i class="fas fa-align-left"></i>Description:</label>
+            <textarea id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
+        </div>
 
-        <label for="image">Product Image:</label>
-        <input id="image" type="file" name="image" class="form-control" accept="image/*">
+        <div class="form-group">
+            <label><i class="fas fa-image"></i>Product Image:</label>
+            <div class="file-input-container">
+                <div class="file-input-button">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span>Choose an image file</span>
+                    <input id="image" type="file" name="image" accept="image/*">
+                </div>
+                <div id="fileName" class="file-name">No file selected</div>
+            </div>
+        </div>
 
-
-        <button type="button" class="btn" onclick="saveProduct()">Add Product</button><br><br>
-        <button type="button" class="btn" onclick="updateProduct()">Update Product</button><br><br>
-        <button type="button" class="btn" onclick="deleteProduct()">Delete Product</button><br><br>
-        <a href="adminDashboard.html" class="btn">Back to Dashboard</a>
+        <div class="btn-container">
+            <button type="button" class="btn" onclick="saveProduct()">
+                <i class="fas fa-save"></i> Add Product
+            </button>
+            <button type="button" class="btn" onclick="updateProduct()">
+                <i class="fas fa-edit"></i> Update Product
+            </button>
+            <button type="button" class="btn" onclick="deleteProduct()">
+                <i class="fas fa-trash-alt"></i> Delete Product
+            </button>
+            <a href="adminDashboard.html" class="btn">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
     </form>
 </div>
+
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
+    // Display selected file name
+    document.getElementById('image').addEventListener('change', function(e) {
+        const fileName = e.target.files[0] ? e.target.files[0].name : 'No file selected';
+        document.getElementById('fileName').textContent = fileName;
+    });
+
     /*----------------------------------Save Product----------------------------------*/
     function saveProduct() {
-
         const productID = $('#productID').val();
         const name = $('#productName').val();
         const description = $('#description').val();
@@ -123,7 +274,6 @@
         const price = $('#price').val();
         const stock = $('#stock').val();
         const image = $('#image')[0].files[0];
-
 
         const formData = new FormData();
         formData.append('file', image);
@@ -146,17 +296,28 @@
             contentType: false,
             success: function (response) {
                 console.log(response);
-                Swal.fire('Success', 'Product saved successfully!', 'success');
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Product saved successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                });
             },
             error: function (xhr, status, error) {
-                Swal.fire('Error', 'Failed to save product: ' + xhr.responseText, 'error');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to save product: ' + xhr.responseText,
+                    icon: 'error',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                });
             }
         });
     }
 
     /*----------------------------------Update Product----------------------------------*/
     function updateProduct() {
-
         const productID = $('#productID').val();
         const name = $('#productName').val();
         const description = $('#description').val();
@@ -165,46 +326,79 @@
         const stock = $('#stock').val();
 
         console.log(description, category, price, stock)
-
         console.log(productID, name, description, category, price, stock);
+
         $.ajax({
             url: "http://localhost:8080/api/v1/products/update",
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify({
-                productID:productID,
-                name:name,
-                category:category,
-                price:price,
-                stock:stock,
-                description:description
+                productID: productID,
+                name: name,
+                category: category,
+                price: price,
+                stock: stock,
+                description: description
             }),
-
             success: function (response) {
-                Swal.fire('Success', 'Product updated successfully!', 'success');
-
+                Swal.fire({
+                    title: 'Success!',
+                    text: 'Product updated successfully!',
+                    icon: 'success',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                });
             },
             error: function (xhr, status, error) {
                 console.error("Update error:", status, error, xhr.responseText);
-                Swal.fire('Error', 'Failed to update product: ' + xhr.responseText, 'error');
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to update product: ' + xhr.responseText,
+                    icon: 'error',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                });
             }
         })
     }
-
 
     /*----------------------------------Delete Product----------------------------------*/
     function deleteProduct() {
         let productId = $('#productID').val();
 
-        $.ajax({
-            url: "http://localhost:8080/api/v1/products/delete/" + productId,
-            method: "DELETE",
-            success: function (response) {
-                alert("Product Deleted Successfully!");
-            },
-            error: function (xhr, status, error) {
-                console.error("Delete error:", status, error, xhr.responseText);
-                alert("Error deleting product!");
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff69b4',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: "http://localhost:8080/api/v1/products/delete/" + productId,
+                    method: "DELETE",
+                    success: function (response) {
+                        Swal.fire({
+                            title: 'Deleted!',
+                            text: 'Product has been deleted.',
+                            icon: 'success',
+                            confirmButtonColor: '#ff69b4',
+                            confirmButtonText: 'Okay'
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Delete error:", status, error, xhr.responseText);
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Failed to delete product!',
+                            icon: 'error',
+                            confirmButtonColor: '#ff69b4',
+                            confirmButtonText: 'Okay'
+                        });
+                    }
+                });
             }
         });
     }
