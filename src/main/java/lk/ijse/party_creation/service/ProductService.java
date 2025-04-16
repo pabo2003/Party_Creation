@@ -6,9 +6,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 public interface ProductService {
-    public int saveProduct(ProductDTO product, MultipartFile file);
-    public int deleteProduct(int productID);
-    public int updateProduct(ProductDTO productDTO);
-    public ProductDTO getProductById(int productID);
-    public List<ProductDTO> getAllProducts();
+    int saveProduct(ProductDTO product, MultipartFile file);
+    int deleteProduct(int productID);
+    int updateProduct(ProductDTO productDTO);
+    ProductDTO getProductById(int productID);
+    List<ProductDTO> getAllProducts();
 }

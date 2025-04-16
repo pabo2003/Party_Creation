@@ -7,7 +7,7 @@ import lombok.*;
 @Data
 @Getter
 @Setter
-public class PartyCategoryDTO {
+public class CategoryDTO {
     private int partyCategoryID;
     private String name;
 }

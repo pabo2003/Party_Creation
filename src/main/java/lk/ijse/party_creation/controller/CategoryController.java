@@ -1,32 +1,30 @@
 package lk.ijse.party_creation.controller;
 
-import lk.ijse.party_creation.dto.PartyCategoryDTO;
+import lk.ijse.party_creation.dto.CategoryDTO;
 import lk.ijse.party_creation.dto.ResponseDTO;
-import lk.ijse.party_creation.entity.PartyCategory;
 import lk.ijse.party_creation.service.CategoryService;
-import lk.ijse.party_creation.util.ResponseUtil;
 import lk.ijse.party_creation.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.util.List;
 
 @CrossOrigin
 @RestController
 @RequestMapping("/api/v1/category")
-public class PartyCategoryController {
+public class CategoryController {
 
     @Autowired
     private final CategoryService categoryService;
 
-    public PartyCategoryController(CategoryService categoryService) {
+    public CategoryController(CategoryService categoryService) {
         this.categoryService = categoryService;
     }
 
     @PostMapping(value = "/save")
-    public ResponseEntity<ResponseDTO> saveProduct(@RequestBody PartyCategoryDTO partyCategoryDTO){
+    public ResponseEntity<ResponseDTO> saveProduct(@RequestBody CategoryDTO partyCategoryDTO){
         System.out.println(partyCategoryDTO.getPartyCategoryID());
         System.out.println("ddddddddddddddddddddddddddddddddddddddddddddddd"+partyCategoryDTO.getName());
         try{
@@ -45,7 +43,7 @@ public class PartyCategoryController {
     }
 
     @PostMapping(value = "/update")
-    public ResponseEntity<ResponseDTO> updateProduct(@RequestBody PartyCategoryDTO partyCategoryDTO) {
+    public ResponseEntity<ResponseDTO> updateProduct(@RequestBody CategoryDTO partyCategoryDTO) {
         System.out.println("id: " + partyCategoryDTO.getPartyCategoryID());
 
         try{
@@ -66,4 +64,19 @@ public class PartyCategoryController {
             throw new RuntimeException(e);
         }
     }
+
+    @GetMapping("getAll")
+    public ResponseEntity<ResponseDTO> getAllCategories() {
+        List<CategoryDTO> categories = categoryService.getAllCategories();
+        ResponseDTO response = new ResponseDTO(200, "All products fetched successfully", categories);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("delete/{categoryId}")
+    public ResponseEntity<ResponseDTO> deleteCategory(@PathVariable int categoryId) {
+        int deletedId = categoryService.deleteCategory(categoryId);
+        ResponseDTO response = new ResponseDTO(200, "Category deleted successfully", deletedId);
+        return ResponseEntity.ok(response);
+    }
+
 }

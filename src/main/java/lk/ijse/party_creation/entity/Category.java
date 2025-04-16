@@ -13,7 +13,7 @@ import lombok.*;
 @Setter
 @Data
 @Entity
-public class PartyCategory {
+public class Category {
     @Id
     private int categoryID;
 

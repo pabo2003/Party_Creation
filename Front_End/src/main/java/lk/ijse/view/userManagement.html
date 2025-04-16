@@ -143,13 +143,13 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
         <li class="nav-item">
-          <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Dashboard</a>
+          <a class="nav-link active" href="adminDashboard.html"><i class="fas fa-home me-1"></i> Dashboard</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="#"><i class="fas fa-cog me-1"></i> Settings</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
+          <a class="nav-link" href="register.html"><i class="fas fa-sign-out-alt me-1"></i> Logout</a>
         </li>
       </ul>
     </div>
@@ -178,12 +178,12 @@
       <span><i class="fas fa-table me-2"></i>User Details</span>
       <div class="search-box">
         <i class="fas fa-search"></i>
-        <input type="text" class="form-control" placeholder="Search users...">
+        <input id="searchInput" type="text" class="form-control" placeholder="Search users...">
       </div>
     </div>
     <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-hover">
+      <div class="table-responsive user-table-container">
+        <table class="table table-hover user-table">
           <thead>
           <tr>
             <th>#</th>
@@ -195,87 +195,8 @@
             <th>Actions</th>
           </tr>
           </thead>
-          <tbody>
-          <tr>
-            <td>1</td>
-            <td>550e8400-e29b-41d4-a716-446655440000</td>
-            <td>John Doe</td>
-            <td>john@example.com</td>
-            <td>Admin</td>
-            <td><span class="badge badge-verified rounded-pill">Verified</span></td>
-            <td>
-              <button class="btn btn-sm btn-outline-pink me-1">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-pink">
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>550e8400-e29b-41d4-a716-446655440001</td>
-            <td>Jane Smith</td>
-            <td>jane@example.com</td>
-            <td>User</td>
-            <td><span class="badge badge-not-verified rounded-pill">Not Verified</span></td>
-            <td>
-              <button class="btn btn-sm btn-outline-pink me-1">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-pink">
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>550e8400-e29b-41d4-a716-446655440002</td>
-            <td>Alice Johnson</td>
-            <td>alice@example.com</td>
-            <td>Moderator</td>
-            <td><span class="badge badge-verified rounded-pill">Verified</span></td>
-            <td>
-              <button class="btn btn-sm btn-outline-pink me-1">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-pink">
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>550e8400-e29b-41d4-a716-446655440003</td>
-            <td>Bob Williams</td>
-            <td>bob@example.com</td>
-            <td>User</td>
-            <td><span class="badge badge-not-verified rounded-pill">Not Verified</span></td>
-            <td>
-              <button class="btn btn-sm btn-outline-pink me-1">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-pink">
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>550e8400-e29b-41d4-a716-446655440004</td>
-            <td>Emily Davis</td>
-            <td>emily@example.com</td>
-            <td>User</td>
-            <td><span class="badge badge-verified rounded-pill">Verified</span></td>
-            <td>
-              <button class="btn btn-sm btn-outline-pink me-1">
-                <i class="fas fa-edit"></i>
-              </button>
-              <button class="btn btn-sm btn-outline-pink">
-                <i class="fas fa-trash"></i>
-              </button>
-            </td>
-          </tr>
+          <tbody id="userTableBody">
+
           </tbody>
         </table>
       </div>
@@ -301,10 +222,96 @@
 <!-- Footer -->
 <footer class="mt-5 py-3 text-center text-muted">
   <div class="container">
-    <p class="mb-0">© 2023 User Management System. All rights reserved.</p>
+    <p class="mb-0">© 2025 User Management System. All rights reserved.</p>
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+  /*----------------------------------Load Users----------------------------------*/
+  function loadUsers() {
+    $.ajax({
+      url: "http://localhost:8080/api/v1/user/getAll",
+      method: "GET",
+      dataType: "json",
+      success: function(response) {
+        const tableBody = $('#userTableBody');
+        tableBody.empty();
+
+        if (!response || (Array.isArray(response) && response.length === 0)) {
+          tableBody.append('<tr><td colspan="7" style="text-align: center;">No users found</td></tr>');
+          return;
+        }
+
+        const users = Array.isArray(response) ? response : (response.data || []);
+
+        if (users.length === 0) {
+          tableBody.append('<tr><td colspan="7" style="text-align: center;">No users found</td></tr>');
+          return;
+        }
+
+        try {
+          users.forEach((user, index) => {
+            const row = `
+                        <tr>
+                            <td>${index + 1}</td>
+                            <td>${user.id || 'N/A'}</td>
+                            <td>${user.name || 'N/A'}</td>
+                            <td>${user.email || 'N/A'}</td>
+                            <td>${user.role || 'N/A'}</td>
+                            <td>
+                                <span class="badge ${user.verified ? 'badge-verified' : 'badge-not-verified'}">
+                                    ${user.verified ? 'Verified' : 'Not Verified'}
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-pink edit-btn" data-id="${user.id}">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-outline-danger delete-btn" data-id="${user.id}">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+            tableBody.append(row);
+          });
+        } catch (error) {
+          console.error("Error processing user data:", error);
+          tableBody.append('<tr><td colspan="7" style="text-align: center;">Error loading user data</td></tr>');
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error("AJAX Error:", status, error);
+        $('#userTableBody').html(`
+                <tr>
+                    <td colspan="7" style="text-align: center;">
+                        Failed to load users. Please try again later.
+                    </td>
+                </tr>
+            `);
+
+        // Show error message with SweetAlert
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Failed to load users. Please try again later.',
+          confirmButtonColor: 'var(--primary-pink)'
+        });
+      }
+    });
+  }
+
+  // Call the function when the page loads
+  $(document).ready(function() {
+    loadUsers();
+  });
+</script>
+
+
+
 </body>
 </html>

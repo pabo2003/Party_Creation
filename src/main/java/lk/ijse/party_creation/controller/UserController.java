@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @CrossOrigin("*")
 @RestController
@@ -95,5 +97,12 @@ public class UserController {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @GetMapping("getAll")
+    public ResponseEntity<ResponseDTO> getAllUsers(){
+        List<UserDTO> users = userService.getAllUsers();
+        ResponseDTO response = new ResponseDTO(200, "All users fetched successfully", users);
+        return ResponseEntity.ok(response);
     }
 }

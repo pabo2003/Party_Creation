@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Customer Registration</title>
+    <title>Category Management</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         * {
@@ -32,7 +32,7 @@
 
         .formbold-form-wrapper {
             margin: 0 auto;
-            max-width: 570px;
+            max-width: 800px;
             width: 100%;
             background: rgba(255, 255, 255, 0.9);
             padding: 40px;
@@ -127,7 +127,7 @@
             box-shadow: 0 15px 30px rgba(255, 105, 180, 0.2);
             background: rgba(255, 255, 255, 0.8);
             width: 100%;
-            max-width: 600px;
+            max-width: 900px;
         }
 
         .btn-container {
@@ -164,6 +164,77 @@
             flex-direction: column;
             gap: 15px;
         }
+
+        /* Table Styles */
+        .category-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.1);
+        }
+
+        .category-table th {
+            background-color: #ff69b4;
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        .category-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ffe4e1;
+            color: #555;
+        }
+
+        .category-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .category-table tr:hover {
+            background-color: #fff5f7;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            margin: 0 3px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .edit-btn {
+            background-color: #ffb6c1;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #ff69b4;
+        }
+
+        .delete-btn {
+            background-color: #ff4757;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #ff0000;
+        }
+
+        .table-container {
+            margin-top: 30px;
+        }
+
+        .table-title {
+            color: #db7093;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -190,7 +261,7 @@
                     />
                 </div>
                 <div>
-                    <label for="name" class="formbold-form-label"> Email </label>
+                    <label for="name" class="formbold-form-label"> Category Name </label>
                     <input
                             type="text"
                             name="name"
@@ -207,6 +278,23 @@
                 <a href="adminDashboard.html" class="btn">Back to Dashboard</a>
             </div>
         </form>
+
+        <!-- Category Table -->
+        <div class="table-container">
+            <h3 class="table-title">All Categories</h3>
+            <table class="category-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Category Name</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="categoryTableBody">
+                <!-- Categories will be loaded here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -214,12 +302,96 @@
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
 <script>
+    /*----------------------------------Load Categories----------------------------------*/
+    function loadCategories() {
+        $.ajax({
+            url: 'http://localhost:8080/api/v1/category/getAll',
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                const tableBody = $('#categoryTableBody');
+                tableBody.empty();
+
+                if (!response || (Array.isArray(response) && response.length === 0)){
+                    tableBody.append('<tr><td colspan="3" style="text-align: center;">No categories found</td></tr>');
+                    return;
+                }
+
+                const categories = Array.isArray(response) ? response : (response.data || []);
+
+                if (categories.length === 0) {
+                    tableBody.append('<tr><td colspan="3" style="text-align: center;">No categories found</td></tr>');
+                    return;
+                }
+
+                categories.forEach((category, index) => {
+                    const row = `
+                        <tr>
+                            <td>${category.id || 'N/A'}</td>
+                            <td>${category.name || 'N/A'}</td>
+                            <td>
+                                <button class="action-btn edit-btn" onclick="fillForm('${category.partyCategoryID}', '${category.name}')">
+                                    Edit
+                                </button>
+                                <button class="action-btn delete-btn" onclick="confirmDelete('${category.partyCategoryID}')">
+                                    Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                    tableBody.append(row);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.error("Error loading categories:", error);
+                $('#categoryTableBody').html(`
+                    <tr>
+                        <td colspan="3" style="text-align: center; color: #ff4757;">
+                            Failed to load categories. Please try again later.
+                        </td>
+                    </tr>
+                `);
+            }
+        });
+    }
+
+    /*----------------------------------Fill Form for Editing----------------------------------*/
+    function fillForm(id, name) {
+        $('#id').val(id);
+        $('#name').val(name);
+        // Scroll to the form
+        $('html, body').animate({
+            scrollTop: $('form').offset().top - 20
+        }, 500);
+    }
+
+    /*----------------------------------Confirm Delete----------------------------------*/
+    function confirmDelete(categoryId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff69b4',
+            cancelButtonColor: '#888',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteCategory(categoryId);
+            }
+        });
+    }
+
     /*----------------------------------Save Category----------------------------------*/
     function saveCategory() {
         const categoryId = $("#id").val();
         const categoryName = $("#name").val();
 
-        console.log(categoryId, categoryName);
+        if (!categoryId || !categoryName) {
+            Swal.fire('Error', 'Please fill in all fields', 'error');
+            return;
+        }
+
         $.ajax({
             url: 'http://localhost:8080/api/v1/category/save',
             method: 'POST',
@@ -228,18 +400,24 @@
             data: JSON.stringify({
                 partyCategoryID: categoryId,
                 name: categoryName
-
             }),
-            success: function (response) {
-                console.log(response)
+            success: function(response) {
                 Swal.fire({
                     title: 'Success!',
-                    text: 'Customer details saved successfully',
+                    text: 'Category saved successfully',
                     icon: 'success',
                     confirmButtonText: 'Okay'
+                }).then(() => {
+                    // Clear form and reload categories
+                    $('#id').val('');
+                    $('#name').val('');
+                    loadCategories();
                 });
             },
-        })
+            error: function(xhr) {
+                Swal.fire('Error', 'Failed to save category: ' + (xhr.responseText || 'Unknown error'), 'error');
+            }
+        });
     }
 
     /*----------------------------------Update Category----------------------------------*/
@@ -247,7 +425,10 @@
         const categoryId = $('#id').val();
         const categoryName = $('#name').val();
 
-        console.log(categoryId,categoryName);
+        if (!categoryId || !categoryName) {
+            Swal.fire('Error', 'Please fill in all fields', 'error');
+            return;
+        }
 
         $.ajax({
             url: 'http://localhost:8080/api/v1/category/update',
@@ -258,16 +439,54 @@
                 partyCategoryID: categoryId,
                 name: categoryName
             }),
-            success: function (response) {
-                console.log(response)
-                Swal.fire('Success','Category updated successfully','success');
+            success: function(response) {
+                Swal.fire('Success', 'Category updated successfully', 'success')
+                    .then(() => {
+                        // Clear form and reload categories
+                        $('#id').val('');
+                        $('#name').val('');
+                        loadCategories();
+                    });
             },
-            error: function (xhr, status, error) {
-                console.error("Update error:", status, error, xhr.responseText);
-                Swal.fire('Error', 'Failed to update category:'+ xhr.responseText, 'error');
+            error: function(xhr) {
+                Swal.fire('Error', 'Failed to update category: ' + (xhr.responseText || 'Unknown error'), 'error');
             }
-        })
+        });
     }
+
+    /*----------------------------------Delete Category----------------------------------*/
+    function deleteCategory(categoryId) {
+        // If no ID passed, get from form
+        // const idToDelete = categoryId || $('#id').val();
+
+        categoryId = categoryId || $('#id').val();
+        /*if (!idToDelete) {
+            Swal.fire('Error', 'Please specify a category to delete', 'error');
+            return;
+        }*/
+
+        $.ajax({
+            url: `http://localhost:8080/api/v1/category/delete/${categoryId}`,
+            method: 'DELETE',
+            success: function(response) {
+                Swal.fire('Success', 'Category deleted successfully', 'success')
+                    .then(() => {
+                        // Clear form and reload categories
+                        $('#id').val('');
+                        $('#name').val('');
+                        loadCategories();
+                    });
+            },
+            error: function(xhr) {
+                Swal.fire('Error', 'Failed to delete category: ' + (xhr.responseText || 'Unknown error'), 'error');
+            }
+        });
+    }
+
+    // Load categories when page loads
+    $(document).ready(function() {
+        loadCategories();
+    });
 </script>
 </body>
 </html>

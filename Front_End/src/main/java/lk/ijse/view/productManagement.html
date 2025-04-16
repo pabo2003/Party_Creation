@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Product</title>
+    <title>Product Management</title>
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -21,20 +21,22 @@
             margin: 0;
             padding: 0;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        }
+
+        .main-container {
+            width: 95%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
         }
 
         .container {
-            width: 90%;
-            max-width: 700px;
-            margin: 30px auto;
-            padding: 30px;
             background-color: white;
             border-radius: 15px;
             box-shadow: 0 10px 30px rgba(255, 105, 180, 0.2);
             border: 1px solid var(--light-pink);
+            padding: 30px;
+            margin-bottom: 30px;
         }
 
         h1 {
@@ -138,12 +140,6 @@
             font-size: 14px;
         }
 
-        .card-content {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
         /* File input styling */
         .file-input-container {
             position: relative;
@@ -190,69 +186,232 @@
             color: var(--dark-pink);
             font-style: italic;
         }
+
+        /* Product Table Styles */
+        .product-table-container {
+            overflow-x: auto;
+            margin-top: 30px;
+        }
+
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.1);
+        }
+
+        .product-table th {
+            background-color: var(--primary-pink);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .product-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--pale-pink);
+            vertical-align: middle;
+        }
+
+        .product-table tr:hover {
+            background-color: var(--pale-pink);
+        }
+
+        .product-table img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+            border: 1px solid var(--light-pink);
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .edit-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .edit-btn:hover {
+            background-color: #45a049;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        .view-btn {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .view-btn:hover {
+            background-color: #0b7dda;
+        }
+
+        .search-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+            width: 300px;
+        }
+
+        .search-box input {
+            padding-left: 40px;
+            border-radius: 20px;
+            border: 1px solid var(--light-pink);
+            width: 100%;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 12px;
+            color: var(--primary-pink);
+        }
+
+        .refresh-btn {
+            background-color: var(--primary-pink);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .refresh-btn:hover {
+            background-color: var(--dark-pink);
+        }
+
+        .product-table tr.selected {
+            background-color: var(--light-pink) !important;
+        }
     </style>
 </head>
 <body>
-<div class="container">
-    <h1><i class="fas fa-plus-circle"></i> Product Management</h1>
-    <form id="addProductForm">
-        <div class="form-group">
-            <label for="productID"><i class="fas fa-barcode"></i>Product ID:</label>
-            <input type="number" id="productID" name="productID" placeholder="Enter Product ID" required>
-        </div>
-
-        <div class="form-group">
-            <label for="productName"><i class="fas fa-tag"></i>Product Name:</label>
-            <input type="text" id="productName" name="name" placeholder="Enter product name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="category"><i class="fas fa-list"></i>Category:</label>
-            <input type="text" id="category" name="category" placeholder="Enter product category" required>
-        </div>
-
-        <div class="form-group">
-            <label for="price"><i class="fas fa-dollar-sign"></i>Price:</label>
-            <input type="number" id="price" name="price" placeholder="Enter product price" required>
-        </div>
-
-        <div class="form-group">
-            <label for="stock"><i class="fas fa-boxes"></i>Stock:</label>
-            <input type="number" id="stock" name="stock" placeholder="Enter product stock" required>
-        </div>
-
-        <div class="form-group">
-            <label for="description"><i class="fas fa-align-left"></i>Description:</label>
-            <textarea id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label><i class="fas fa-image"></i>Product Image:</label>
-            <div class="file-input-container">
-                <div class="file-input-button">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                    <span>Choose an image file</span>
-                    <input id="image" type="file" name="image" accept="image/*">
-                </div>
-                <div id="fileName" class="file-name">No file selected</div>
+<div class="main-container">
+    <div class="container">
+        <h1><i class="fas fa-plus-circle"></i> Product Management</h1>
+        <form id="addProductForm">
+            <div class="form-group">
+                <label for="productID"><i class="fas fa-barcode"></i>Product ID:</label>
+                <input type="number" id="productID" name="productID" placeholder="Enter Product ID" required>
             </div>
+
+            <div class="form-group">
+                <label for="productName"><i class="fas fa-tag"></i>Product Name:</label>
+                <input type="text" id="productName" name="name" placeholder="Enter product name" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category"><i class="fas fa-list"></i>Category:</label>
+                <input type="text" id="category" name="category" placeholder="Enter product category" required>
+            </div>
+
+            <div class="form-group">
+                <label for="price"><i class="fas fa-dollar-sign"></i>Price:</label>
+                <input type="number" id="price" name="price" placeholder="Enter product price" required>
+            </div>
+
+            <div class="form-group">
+                <label for="stock"><i class="fas fa-boxes"></i>Stock:</label>
+                <input type="number" id="stock" name="stock" placeholder="Enter product stock" required>
+            </div>
+
+            <div class="form-group">
+                <label for="description"><i class="fas fa-align-left"></i>Description:</label>
+                <textarea id="description" name="description" rows="4" placeholder="Enter product description" required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-image"></i>Product Image:</label>
+                <div class="file-input-container">
+                    <div class="file-input-button">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <span>Choose an image file</span>
+                        <input id="image" type="file" name="image" accept="image/*">
+                    </div>
+                    <div id="fileName" class="file-name">No file selected</div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn" onclick="saveProduct()">
+                    <i class="fas fa-save"></i> Add Product
+                </button>
+                <button type="button" class="btn" onclick="updateProduct()">
+                    <i class="fas fa-edit"></i> Update Product
+                </button>
+                <button type="button" class="btn" onclick="deleteProduct()">
+                    <i class="fas fa-trash-alt"></i> Delete Product
+                </button>
+                <a href="adminDashboard.html" class="btn">
+                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search products...">
+            </div>
+            <button class="refresh-btn" onclick="loadProducts()">
+                <i class="fas fa-sync-alt"></i> Refresh
+            </button>
         </div>
 
-        <div class="btn-container">
-            <button type="button" class="btn" onclick="saveProduct()">
-                <i class="fas fa-save"></i> Add Product
-            </button>
-            <button type="button" class="btn" onclick="updateProduct()">
-                <i class="fas fa-edit"></i> Update Product
-            </button>
-            <button type="button" class="btn" onclick="deleteProduct()">
-                <i class="fas fa-trash-alt"></i> Delete Product
-            </button>
-            <a href="adminDashboard.html" class="btn">
-                <i class="fas fa-arrow-left"></i> Back to Dashboard
-            </a>
+        <div class="product-table-container">
+            <table class="product-table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Image</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Price</th>
+                    <th>Stock</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="productTableBody">
+                    <tr onclick="fillFormWithProductData('${product.productID}')" style="cursor: pointer;">
+                <!-- Products will be loaded here -->
+                </tbody>
+            </table>
         </div>
-    </form>
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -264,6 +423,192 @@
         const fileName = e.target.files[0] ? e.target.files[0].name : 'No file selected';
         document.getElementById('fileName').textContent = fileName;
     });
+
+    // Load products when page loads
+    $(document).ready(function() {
+        loadProducts();
+    });
+
+    // Search functionality
+    $('#searchInput').on('keyup', function() {
+        const value = $(this).val().toLowerCase();
+        $('#productTableBody tr').filter(function() {
+            $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+    });
+
+    /*----------------------------------Load Products----------------------------------*/
+    function loadProducts() {
+        $.ajax({
+            url: "http://localhost:8080/api/v1/products/getAll",
+            method: "GET",
+            dataType: "json", // Explicitly expect JSON response
+            success: function (response) {
+                const tableBody = $('#productTableBody');
+                tableBody.empty();
+
+                // Check if response is valid and has data
+                if(!response || (Array.isArray(response) && response.length === 0)) {
+                    tableBody.append('<tr><td colspan="8" style="text-align: center;">No products found</td></tr>');
+                    return;
+                }
+
+                // Handle case where response might be an object with data property
+                const products = Array.isArray(response) ? response : (response.data || []);
+
+                if(products.length === 0) {
+                    tableBody.append('<tr><td colspan="8" style="text-align: center;">No products found</td></tr>');
+                    return;
+                }
+
+                // Safely build table rows
+                try {
+                    products.forEach(product => {
+                        // Ensure product has required properties
+                        const productID = product.productID || '';
+                        const name = product.name || '';
+                        const category = product.category || '';
+                        const price = product.price ? parseFloat(product.price).toFixed(2) : '0.00';
+                        const stock = product.stock || '0';
+                        const description = product.description ?
+                            (product.description.length > 50 ?
+                                product.description.substring(0, 50) + '...' :
+                                product.description) : '';
+                        const imageUrl = product.imageUrl || 'https://via.placeholder.com/60';
+
+                        const row = `
+                            <tr>
+                                <td>${productID}</td>
+                                <td><img src="${imageUrl}" alt="${name}"></td>
+                                <td>${name}</td>
+                                <td>${category}</td>
+                                <td>$${price}</td>
+                                <td>${stock}</td>
+                                <td>${description}</td>
+                                <td>
+                                    <div class="action-btns">
+                                        <button class="action-btn edit-btn" onclick="editProduct('${productID}')">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </button>
+                                        <button class="action-btn delete-btn" onclick="confirmDelete('${productID}')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                        tableBody.append(row);
+                    });
+                } catch (error) {
+                    console.error("Error processing products:", error);
+                    tableBody.append('<tr><td colspan="8" style="text-align: center; color: red;">Error loading products</td></tr>');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading products:", error, xhr.responseText);
+                const tableBody = $('#productTableBody');
+                tableBody.empty();
+                tableBody.append('<tr><td colspan="8" style="text-align: center; color: red;">Failed to load products</td></tr>');
+
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to load products: ' + (xhr.responseText || error),
+                    icon: 'error',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                });
+            }
+        });
+    }
+
+    /*----------------------------------Fill Form with Product Data----------------------------------*/
+    function fillFormWithProductData(productId) {
+        // Remove previous selection
+        $('.product-table tr').removeClass('selected');
+        // Add selection to clicked row
+        $(event.currentTarget).addClass('selected');
+        $.ajax({
+            url: `http://localhost:8080/api/v1/products/${productId}`,
+            method: "GET",
+            success: function (product) {
+                $('#productID').val(product.productID);
+                $('#productName').val(product.name);
+                $('#category').val(product.category);
+                $('#price').val(product.price);
+                $('#stock').val(product.stock);
+                $('#description').val(product.description);
+
+                // If you have an image display, you can update it here
+                // $('#productImagePreview').attr('src', product.imageUrl || '');
+                $('#fileName').text(product.imageUrl ? 'Image loaded from database' : 'No image available');
+
+                // Scroll to form
+                $('html, body').animate({
+                    scrollTop: $(".container").offset().top
+                }, 500);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading product:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to load product details: ' + xhr.responseText,
+                    icon: 'error',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                });
+            }
+        });
+    }
+
+
+    /*----------------------------------Edit Product----------------------------------*/
+    function editProduct(productId) {
+        $.ajax({
+            url: `http://localhost:8080/api/v1/products/${productId}`,
+            method: "GET",
+            success: function (product) {
+                $('#productID').val(product.productID);
+                $('#productName').val(product.name);
+                $('#category').val(product.category);
+                $('#price').val(product.price);
+                $('#stock').val(product.stock);
+                $('#description').val(product.description);
+
+                // Scroll to form
+                $('html, body').animate({
+                    scrollTop: $(".container").offset().top
+                }, 500);
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading product:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to load product details: ' + xhr.responseText,
+                    icon: 'error',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                });
+            }
+        });
+        fillFormWithProductData(productId);
+    }
+
+    /*----------------------------------Confirm Delete----------------------------------*/
+    function confirmDelete(productId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ff69b4',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteProduct(productId);
+            }
+        });
+    }
 
     /*----------------------------------Save Product----------------------------------*/
     function saveProduct() {
@@ -286,8 +631,6 @@
             stock: stock
         })], { type: 'application/json' }));
 
-        console.log(productID, name, description, category, price, stock, image);
-
         $.ajax({
             url: "http://localhost:8080/api/v1/products/save",
             method: "POST",
@@ -295,13 +638,16 @@
             processData: false,
             contentType: false,
             success: function (response) {
-                console.log(response);
                 Swal.fire({
                     title: 'Success!',
                     text: 'Product saved successfully!',
                     icon: 'success',
                     confirmButtonColor: '#ff69b4',
                     confirmButtonText: 'Okay'
+                }).then(() => {
+                    loadProducts();
+                    $('#addProductForm')[0].reset();
+                    $('#fileName').text('No file selected');
                 });
             },
             error: function (xhr, status, error) {
@@ -325,9 +671,6 @@
         const price = $('#price').val();
         const stock = $('#stock').val();
 
-        console.log(description, category, price, stock)
-        console.log(productID, name, description, category, price, stock);
-
         $.ajax({
             url: "http://localhost:8080/api/v1/products/update",
             method: "POST",
@@ -347,6 +690,10 @@
                     icon: 'success',
                     confirmButtonColor: '#ff69b4',
                     confirmButtonText: 'Okay'
+                }).then(() => {
+                    loadProducts();
+                    $('#addProductForm')[0].reset();
+                    $('#fileName').text('No file selected');
                 });
             },
             error: function (xhr, status, error) {
@@ -363,41 +710,33 @@
     }
 
     /*----------------------------------Delete Product----------------------------------*/
-    function deleteProduct() {
-        let productId = $('#productID').val();
+    function deleteProduct(productId) {
+        productId = productId || $('#productID').val();
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "You won't be able to revert this!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#ff69b4',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                $.ajax({
-                    url: "http://localhost:8080/api/v1/products/delete/" + productId,
-                    method: "DELETE",
-                    success: function (response) {
-                        Swal.fire({
-                            title: 'Deleted!',
-                            text: 'Product has been deleted.',
-                            icon: 'success',
-                            confirmButtonColor: '#ff69b4',
-                            confirmButtonText: 'Okay'
-                        });
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Delete error:", status, error, xhr.responseText);
-                        Swal.fire({
-                            title: 'Error!',
-                            text: 'Failed to delete product!',
-                            icon: 'error',
-                            confirmButtonColor: '#ff69b4',
-                            confirmButtonText: 'Okay'
-                        });
-                    }
+        $.ajax({
+            url: `http://localhost:8080/api/v1/products/delete/${productId}`,
+            method: "DELETE",
+            success: function (response) {
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'Product has been deleted.',
+                    icon: 'success',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
+                }).then(() => {
+                    loadProducts();
+                    $('#addProductForm')[0].reset();
+                    $('#fileName').text('No file selected');
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Delete error:", status, error, xhr.responseText);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to delete product!',
+                    icon: 'error',
+                    confirmButtonColor: '#ff69b4',
+                    confirmButtonText: 'Okay'
                 });
             }
         });

@@ -2,7 +2,9 @@ package lk.ijse.party_creation.service.Impl;
 
 import jakarta.transaction.Transactional;
 import lk.ijse.party_creation.config.VerificationCodeGenerator;
+import lk.ijse.party_creation.dto.ProductDTO;
 import lk.ijse.party_creation.dto.UserDTO;
+import lk.ijse.party_creation.entity.Product;
 import lk.ijse.party_creation.entity.User;
 import lk.ijse.party_creation.repo.UserRepo;
 import lk.ijse.party_creation.service.UserService;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -117,6 +120,14 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
 
     @Override
+    public List<UserDTO> getAllUsers() {
+        List<User> users = userRepo.findAll();
+        return users.stream()
+                .map(user -> modelMapper.map(user, UserDTO.class))
+                .toList();
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepo.findByEmail(email);
         if (user == null) {
@@ -142,4 +153,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     public User findByEmail(String email) {
         return userRepo.findByEmail(email);
     }
+
+
 }
