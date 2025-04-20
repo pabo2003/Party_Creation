@@ -3,6 +3,7 @@ package lk.ijse.party_creation.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Date;
 import java.util.List;
 
 @Table(name = "`orders`")
@@ -18,21 +19,22 @@ public class Order {
     private int orderID;
 
     @ManyToOne
-    @JoinColumn(name = "customID", nullable = false)
-    private Customization customization;
+    @JoinColumn(name = "userID", nullable = false)
+    private User user;
 
     @Column(nullable = false)
-    private String orderDate;
+    private Date orderDate;
 
     @Column(nullable = false)
     private double totalAmount;
 
     @Column(nullable = false)
     private String status;
-
+    private String fullName;
+    private String email;
+    private String address;
+    private String city;
+    private String zipCode;
     @OneToMany(mappedBy = "order")
     private List<OrderDetail> orderDetails;
-
-  /*  @OneToOne(mappedBy = "order")
-    private Payment payment;*/
 }

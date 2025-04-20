@@ -14,5 +14,7 @@ public class ProductDTO {
     private double price;
     private int stock;
     private String description;
-    private String image;
+    private String fileName;
+    private String filetype;
+    private byte[] data;
 }

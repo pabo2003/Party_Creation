@@ -22,4 +22,11 @@ public class OrderDetail {
     @ManyToOne
     @JoinColumn(name = "productID", nullable = false, referencedColumnName = "productID")
     private Product product;
+
+    private int quantity;
+    private double price;
+
+    @OneToOne(mappedBy = "orderDetail")
+    private Payment payment;
+
 }

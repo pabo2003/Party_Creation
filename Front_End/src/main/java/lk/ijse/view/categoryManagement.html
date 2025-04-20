@@ -324,33 +324,28 @@
                     return;
                 }
 
-                categories.forEach((category, index) => {
+                categories.forEach((category) => {
+                    // Try different possible property names for the ID
+                    const categoryId = category.partyCategoryID || category.ca || category.id || 'N/A';
                     const row = `
-                        <tr>
-                            <td>${category.id || 'N/A'}</td>
-                            <td>${category.name || 'N/A'}</td>
-                            <td>
-                                <button class="action-btn edit-btn" onclick="fillForm('${category.partyCategoryID}', '${category.name}')">
-                                    Edit
-                                </button>
-                                <button class="action-btn delete-btn" onclick="confirmDelete('${category.partyCategoryID}')">
-                                    Delete
-                                </button>
-                            </td>
-                        </tr>
-                    `;
+                    <tr>
+                        <td>${categoryId}</td>
+                        <td>${category.name || 'N/A'}</td>
+                        <td>
+                            <button class="action-btn edit-btn" onclick="fillForm('${categoryId}', '${category.name || ''}')">
+                                Edit
+                            </button>
+                            <button class="action-btn delete-btn" onclick="confirmDelete('${categoryId}')">
+                                Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
                     tableBody.append(row);
                 });
             },
             error: function(xhr, status, error) {
                 console.error("Error loading categories:", error);
-                $('#categoryTableBody').html(`
-                    <tr>
-                        <td colspan="3" style="text-align: center; color: #ff4757;">
-                            Failed to load categories. Please try again later.
-                        </td>
-                    </tr>
-                `);
             }
         });
     }

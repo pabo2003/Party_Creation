@@ -1,7 +1,10 @@
 package lk.ijse.party_creation.controller;
 
+import lk.ijse.party_creation.dto.CartDTO;
 import lk.ijse.party_creation.dto.ProductDTO;
 import lk.ijse.party_creation.dto.ResponseDTO;
+import lk.ijse.party_creation.entity.Product;
+import lk.ijse.party_creation.repo.ProductRepo;
 import lk.ijse.party_creation.service.ProductService;
 import lk.ijse.party_creation.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.List;
+import java.util.Optional;
+
+import static lk.ijse.party_creation.util.VarList.OK;
 
 @CrossOrigin("*")
 @RestController
@@ -25,10 +31,13 @@ public class ProductController {
 
     @Autowired
     private final ProductService productService;
+    @Autowired
+    private final ProductRepo productRepo;
 
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductRepo productRepo) {
         this.productService = productService;
+        this.productRepo = productRepo;
     }
 
     @PostMapping(value = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -39,14 +48,13 @@ public class ProductController {
                 Path filePath = Paths.get(System.getProperty("user.dir") + "/src/main/resources/static/" + file.getOriginalFilename());
                 Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
                 System.out.println("File uploaded successfully.");
-                productDTO.setImage(file.getOriginalFilename());
             }
 
             int res = productService.saveProduct(productDTO, file);
             switch (res) {
                 case VarList.Created:
                     return ResponseEntity.status(HttpStatus.CREATED)
-                            .body(new ResponseDTO(VarList.OK, "Product saved successfully", productDTO));
+                            .body(new ResponseDTO(OK, "Product saved successfully", productDTO));
                 default:
                     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                             .body(new ResponseDTO(VarList.INTERNAL_SERVER_ERROR, "Failed to save product", null));
@@ -66,9 +74,9 @@ public class ProductController {
             int res = productService.updateProduct(productDTO);
 
             switch (res) {
-                case VarList.OK:
+                case OK:
                     System.out.println("product updated");
-                    return ResponseEntity.ok(new ResponseDTO(VarList.OK, "product Updated Successfully", productDTO));
+                    return ResponseEntity.ok(new ResponseDTO(OK, "product Updated Successfully", productDTO));
                 case VarList.Not_Found:
                     System.out.println("product not found");
                     return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -92,11 +100,13 @@ public class ProductController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("getAll")
+    @GetMapping("/getAll")
     public ResponseEntity<ResponseDTO> getAllProducts() {
         List<ProductDTO> products = productService.getAllProducts();
-        ResponseDTO response = new ResponseDTO(200, "All products fetched successfully", products);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                new ResponseDTO(OK, "List",products)
+        );
+
     }
 
 
@@ -105,5 +115,14 @@ public class ProductController {
         ProductDTO product = productService.getProductById(productID);
         ResponseDTO response = new ResponseDTO(200, "Product fetched successfully", product);
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/getProductById")
+    public ResponseEntity<ResponseDTO> getProduct(@RequestBody CartDTO cartDTO) {
+        System.out.println("Product get.....................................................................");
+        ProductDTO product = productService.getProductById(cartDTO.getProductId());
+        return ResponseEntity.ok(
+                new ResponseDTO(OK, "List", product)
+        );
+
     }
 }

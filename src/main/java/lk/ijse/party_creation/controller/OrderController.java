@@ -1,17 +1,23 @@
 package lk.ijse.party_creation.controller;
 
-import lk.ijse.party_creation.dto.OrderDTO;
-import lk.ijse.party_creation.dto.ResponseDTO;
+import lk.ijse.party_creation.dto.*;
+import lk.ijse.party_creation.entity.Cart;
+import lk.ijse.party_creation.repo.CartRepo;
 import lk.ijse.party_creation.service.OrderService;
+import lk.ijse.party_creation.service.ProductService;
+import lk.ijse.party_creation.service.UserService;
 import lk.ijse.party_creation.util.VarList;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Date;
 import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
+
+import static lk.ijse.party_creation.util.VarList.OK;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -19,9 +25,18 @@ import java.util.List;
 public class OrderController {
     @Autowired
     private final OrderService orderService;
+    @Autowired
+    private final UserService userService;
+    @Autowired
+    private final ProductService productService;
+    @Autowired
+    private final CartRepo cartRepo;
 
-    public OrderController(OrderService orderService) {
+    public OrderController(OrderService orderService, UserService userService, ProductService productService, CartRepo cartRepo) {
         this.orderService = orderService;
+        this.userService = userService;
+        this.productService = productService;
+        this.cartRepo = cartRepo;
     }
 
     @GetMapping(value = "/getOrderInfo")
@@ -36,63 +51,86 @@ public class OrderController {
     }
 
     @PostMapping(value = "/saveOrderInfo")
-    public ResponseEntity<ResponseDTO> saveOrderInfo(@RequestBody OrderDTO orderDTO){
+    public ResponseEntity<ResponseDTO> saveOrderInfo(@RequestBody Transaction2DTO transactionDTO){
+        System.out.println("transaction .....................");
+        double totalAmount = transactionDTO.getTotalAmount();
+        String fullName = transactionDTO.getFullName();
+        String email = transactionDTO.getEmail();
+        String userEmail = transactionDTO.getUserEmail();
+        String address = transactionDTO.getAddress();
+        String city = transactionDTO.getCity();
+        String zipCode = transactionDTO.getZipCode();
+        Date date = Date.valueOf(LocalDate.now());
+        UserDTO userDTO = userService.searchUser(userEmail);
 
-        System.out.println(orderDTO);
-        try{
-            Date localDate = java.sql.Date.valueOf(LocalDate.now());
-            orderDTO.setOrderDate(localDate);
-            int res = orderService.saveOrder(orderDTO);
+        List<Cart> cart = cartRepo.findByEmail(userEmail);
+        List<OrderDetailsDTO> orderDetailsDTOS = new ArrayList<>();
+        for (Cart cart1 : cart){
+            OrderDetailsDTO orderDetailsDTO = new OrderDetailsDTO();
 
-            switch (res){
-                case VarList.Created:
-                    System.out.println("Order saved successfully");
-                    return ResponseEntity.ok(new ResponseDTO(VarList.OK,"Order information saved successfully",null));
-                case VarList.Not_Acceptable:
-                    System.out.println("Order already exists");
-                    return ResponseEntity.ok(new ResponseDTO(VarList.Not_Acceptable,"Id already exists",null));
-                default:
-                    System.out.println("Error saving Order");
-                    return ResponseEntity.ok(new ResponseDTO(VarList.INTERNAL_SERVER_ERROR,"An error occurred",null));
-            }
-        }catch (Exception e){
-            throw new RuntimeException(e);
+            int productId = cart1.getProductId();
+            int qty = cart1.getQuantity();
+            ProductDTO productDTO = productService.getProductById(productId);
+            double price = productDTO.getPrice();
+            double price2 = qty * price;
+            System.out.println("ordeeeeeeeeeer"+price2);
+
+            orderDetailsDTO.setProduct(productDTO);
+            orderDetailsDTO.setQuantity(qty);
+            orderDetailsDTO.setPrice(price2);
+
+            orderDetailsDTOS.add(orderDetailsDTO);
         }
-    }
 
-    @PutMapping(value = "/update")
-    public ResponseEntity<ResponseDTO> updateOrder(@RequestBody OrderDTO orderDTO) {
-        System.out.println("id: " + orderDTO.getOrderID());
 
-        try{
-            int res = orderService.updateOrder(orderDTO);
 
-            switch (res) {
-                case VarList.OK:
-                    System.out.println("Order updated");
-                    return ResponseEntity.ok(new ResponseDTO(VarList.OK, "Order Updated Successfully", null));
-                case VarList.Not_Found:
-                    System.out.println("Order not found");
-                    return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                            .body(new ResponseDTO(VarList.Not_Found, "Order Not Found", null));
-                default:
-                    System.out.println("Error updating Order");
-                    return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                            .body(new ResponseDTO(VarList.Internal_Server_Error, "Error updating Order", null));
-            }
-        }catch (Exception e) {
-            System.out.println("Exception occurred: " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(VarList.Internal_Server_Error, "Internal Server Error", null));
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setUser(userDTO);
+        orderDTO.setOrderDate(date);
+        orderDTO.setTotalAmount(totalAmount);
+        orderDTO.setStatus("Complete");
+        orderDTO.setFullName(fullName);
+        orderDTO.setAddress(address);
+        orderDTO.setCity(city);
+        orderDTO.setZipCode(zipCode);
+        orderDTO.setEmail(email);
+        System.out.println("Order dtoo  55"+orderDTO);
+
+        PaymentDTO paymentDTO = new PaymentDTO();
+        paymentDTO.setAmount(totalAmount);
+        paymentDTO.setPaymentMethod("Bank Transfer");
+        paymentDTO.setUserEmail(userEmail);
+        System.out.println("Order dtoo 333333"+paymentDTO);
+
+
+        TransactionDTO transactionDTO1 = new TransactionDTO();
+        transactionDTO1.setOrderDTO(orderDTO);
+        transactionDTO1.setOdList(orderDetailsDTOS);
+        transactionDTO1.setPaymentDTO(paymentDTO);
+
+        int res = orderService.saveOrder(transactionDTO1);
+
+        switch (res){
+            case OK:
+                System.out.println("Transaction save");
+                List<Cart> cart1 = cartRepo.findByEmail(userEmail);
+                for (Cart cart2 : cart1){
+                    cartRepo.delete(cart2);
+                }
+                return ResponseEntity.ok(new ResponseDTO(OK, "Successfully", transactionDTO));
+            case VarList.Not_Found:
+                System.out.println("not found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body(new ResponseDTO(VarList.Not_Found, " Not Found", null));
+            default:
+                System.out.println("Error updating product");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ResponseDTO(VarList.Internal_Server_Error, "Error updating product", null));
         }
+
     }
 
-    @DeleteMapping("delete/{id}")
-    public ResponseEntity<ResponseDTO> deleteOrder(@PathVariable int orderId) {
-        int order = orderService.deleteOrder(Integer.parseInt(String.valueOf(orderId)));
-        ResponseDTO response = new ResponseDTO(200, "customer delete successfully", order);
-        return ResponseEntity.ok(response);
-    }
+
 
     @GetMapping("getAll")
     public ResponseEntity<ResponseDTO> getAllOrders() {

@@ -1,4 +1,3 @@
-/*
 package lk.ijse.party_creation.repo;
 
 import lk.ijse.party_creation.entity.Payment;
@@ -9,10 +8,6 @@ import java.util.List;
 
 @Repository
 public interface PaymentRepo extends JpaRepository<Payment,Integer> {
-    Payment findByOrderID(int orderID);
 
-    List<Payment> findByUserID(int userID);
-
-    List<Payment> findByPaymentMethod(String paymentMethod);
 }
-*/
+

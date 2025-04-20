@@ -1,5 +1,6 @@
 package lk.ijse.party_creation.dto;
 
+import lk.ijse.party_creation.entity.OrderDetail;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +10,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class PaymentDTO {
     private int paymentID;
-    private int orderID;
-    private int userID;
+    private OrderDetail orderDetail;
     private String paymentMethod;
     private Double amount;
+    private String userEmail;
 }

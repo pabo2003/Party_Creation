@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Gallery - Party Creation</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-pink: #ff6b9e;
+            --light-pink: #ffc0d6;
+            --dark-pink: #d43d6b;
+            --pink-gradient: linear-gradient(135deg, #ff6b9e 0%, #ff8fab 100%);
+        }
+
+        body {
+            background-color: #fafafa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-pink) !important;
+        }
+
+        .hero-section {
+            background: var(--pink-gradient);
+            color: white;
+            padding: 3rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .product-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(255, 107, 158, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-bottom: 25px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(255, 107, 158, 0.2);
+        }
+
+        .card-img-top {
+            height: 200px;
+            object-fit: cover;
+        }
+        .quantity-selector .btn {
+            padding: 0.375rem 0.75rem;
+        }
+
+        .quantity-input {
+            -moz-appearance: textfield;
+            text-align: center;
+        }
+
+        .quantity-input::-webkit-outer-spin-button,
+        .quantity-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .quantity-selector .btn-outline-secondary {
+            border-color: #ced4da;
+        }
+
+        .quantity-selector .btn-outline-secondary:hover {
+            background-color: #f8f9fa;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .product-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-category {
+            display: inline-block;
+            background-color: var(--light-pink);
+            color: var(--dark-pink);
+            padding: 0.25rem 0.75rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .product-price {
+            font-weight: 700;
+            color: var(--primary-pink);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .stock-info {
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+        }
+
+        .in-stock {
+            color: #28a745;
+        }
+
+        .low-stock {
+            color: #ffc107;
+        }
+
+        .out-of-stock {
+            color: #dc3545;
+        }
+
+        .btn-pink {
+            background-color: var(--primary-pink);
+            border-color: var(--primary-pink);
+            color: white;
+            font-weight: 500;
+        }
+
+        .btn-pink:hover {
+            background-color: var(--dark-pink);
+            border-color: var(--dark-pink);
+            color: white;
+        }
+
+        .footer {
+            background-color: #333;
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .filter-section {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+        <a class="navbar-brand" href="#">
+            <i class="fas fa-birthday-cake me-2"></i>Party Creation
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link active" href="home.html">Home</a>
+                </li>
+                <li class="nav-item ms-lg-3">
+                    <a class="btn btn-pink" href="../../../../../../../../Party_Creation/Front_End/src/main/java/lk/ijse/view/cart.html">
+                        <i class="fas fa-shopping-cart me-1"></i> Cart
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-3">Our Party Products</h1>
+        <p class="lead">Everything you need to make your celebration unforgettable</p>
+    </div>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="row">
+            <div class="col-md-4 mb-3 mb-md-0">
+                <label for="categoryFilter" class="form-label">Filter by Category</label>
+                <select class="form-select" id="categoryFilter">
+                    <option selected>All Categories</option>
+                    <option>Decorations</option>
+                    <option>Tableware</option>
+                    <option>Costumes</option>
+                    <option>Gifts</option>
+                </select>
+            </div>
+            <div class="col-md-5 mb-3 mb-md-0">
+                <label for="searchInput" class="form-label">Search Products</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" id="searchInput" placeholder="Search...">
+                    <button class="btn btn-pink" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label for="sortSelect" class="form-label">Sort By</label>
+                <select class="form-select" id="sortSelect">
+                    <option selected>Featured</option>
+                    <option>Price: Low to High</option>
+                    <option>Price: High to Low</option>
+                    <option>Newest Arrivals</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <!-- Product Grid -->
+    <div class="row" id="productGrid">
+<!--        <div class="col-lg-4 col-md-6">
+            <div class="card product-card">
+                <img src="https://via.placeholder.com/300x200?text=Product+Image" class="card-img-top" alt="Product Image">
+                <div class="card-body">
+                    <span class="product-category">Decorations</span>
+                    <h5 class="product-title">Premium Balloon Arch Kit</h5>
+                    <p class="card-text text-muted">Complete kit for creating stunning balloon arches for any party theme.</p>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div>
+                            <span class="product-price">$29.99</span>
+                            <div class="stock-info in-stock">
+                                <i class="fas fa-check-circle me-1"></i> In Stock (15)
+                            </div>
+                        </div>
+                        <button class="btn btn-pink btn-sm">
+                            <i class="fas fa-cart-plus"></i> Add
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>-->
+
+    </div>
+
+    <!-- Pagination -->
+    <nav aria-label="Product pagination" class="mt-5">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Previous</a>
+            </li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Next</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 mb-4 mb-lg-0">
+                <h5><i class="fas fa-birthday-cake me-2"></i>Party Creation</h5>
+                <p class="mt-3">Your one-stop shop for all party supplies and decorations to make every celebration special.</p>
+            </div>
+            <div class="col-lg-2 col-md-4 mb-4 mb-md-0">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">Home</a></li>
+                    <li><a href="#" class="text-white">Products</a></li>
+                    <li><a href="#" class="text-white">About Us</a></li>
+                    <li><a href="#" class="text-white">Contact</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4 mb-4 mb-md-0">
+                <h5>Customer Service</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#" class="text-white">FAQs</a></li>
+                    <li><a href="#" class="text-white">Shipping Policy</a></li>
+                    <li><a href="#" class="text-white">Returns & Refunds</a></li>
+                    <li><a href="#" class="text-white">Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-3 col-md-4">
+                <h5>Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> 123 Party St, Celebration City</li>
+                    <li><i class="fas fa-phone me-2"></i> (123) 456-7890</li>
+                    <li><i class="fas fa-envelope me-2"></i> info@partycreation.com</li>
+                </ul>
+                <div class="social-icons mt-3">
+                    <a href="#" class="text-white me-2"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-white me-2"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-white"><i class="fab fa-pinterest-p"></i></a>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4 bg-light">
+        <div class="row">
+            <div class="col-md-6 text-center text-md-start">
+                <p class="mb-0">&copy; 2023 Party Creation. All rights reserved.</p>
+            </div>
+            <div class="col-md-6 text-center text-md-end">
+                <p class="mb-0">
+                    <a href="#" class="text-white me-3">Terms of Service</a>
+                    <a href="#" class="text-white">Privacy Policy</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jwt-decode/build/jwt-decode.min.js"></script>
+<script>
+    loadAllProducts();
+    function loadAllProducts(){
+        $.ajax({
+            method: 'GET',
+            contentType: 'application/json',
+            url: 'http://localhost:8080/api/v1/products/getAll',
+            headers: {
+                'Authorization': 'Bearer '+ localStorage.getItem('token')
+            },
+            success: function(response) {
+                const allProducts = response.data;
+                $('#productGrid').empty();
+
+                allProducts.forEach(product => {
+                    let stockClass, stockIcon, stockText;
+                    if (product.stock > 10) {
+                        stockClass = 'in-stock';
+                        stockIcon = 'fa-check-circle';
+                        stockText = 'In Stock';
+                    } else if (product.stock > 0) {
+                        stockClass = 'low-stock';
+                        stockIcon = 'fa-exclamation-circle';
+                        stockText = 'Low Stock';
+                    } else {
+                        stockClass = 'out-of-stock';
+                        stockIcon = 'fa-times-circle';
+                        stockText = 'Out of Stock';
+                    }
+
+                    $('#productGrid').append(`
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card product-card">
+                                <img src="../../../../../../../../Party_Creation/src/main/resources/static/${product.fileName}" class="card-img-top" alt="${product.name}">
+                                <div class="card-body">
+                                    <span class="product-category">${product.category}</span>
+                                    <h5 class="product-title">${product.name}</h5>
+                                    <input type="hidden" value="${product.productID}" class="productID">
+                                    <p class="card-text text-muted">${product.description}</p>
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <span class="product-price">$${product.price.toFixed(2)}</span>
+                                            <div class="stock-info ${stockClass}">
+                                                <i class="fas ${stockIcon} me-1"></i> ${stockText} (${product.stock})
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="input-group quantity-selector" style="width: 120px;">
+                                            <button class="btn btn-outline-secondary minus-btn" type="button">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                            <input type="number" class="form-control text-center quantity-input"
+                                                   value="1" min="1" max="${product.stock}"
+                                                   ${product.stock === 0 ? 'disabled' : ''}>
+                                            <button class="btn btn-outline-secondary plus-btn" type="button"
+                                                ${product.stock === 0 ? 'disabled' : ''}>
+                                                <i class="fas fa-plus"></i>
+                                            </button>
+                                        </div>
+                                        <button class="btn btn-pink btn-sm add-to-cart-btn"
+                                            ${product.stock === 0 ? 'disabled' : ''}>
+                                            <i class="fas fa-cart-plus me-1"></i> Add
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+
+                $('.minus-btn').click(function() {
+                    let input = $(this).siblings('.quantity-input');
+                    let value = parseInt(input.val());
+                    if (value > 1) {
+                        input.val(value - 1);
+                    }
+                });
+
+                $('.plus-btn').click(function() {
+                    let input = $(this).siblings('.quantity-input');
+                    let max = parseInt(input.attr('max'));
+                    let value = parseInt(input.val());
+                    if (value < max) {
+                        input.val(value + 1);
+                    }
+                });
+
+                $('.add-to-cart-btn').click(function() {
+                    let card = $(this).closest('.product-card');
+                    let productID = card.find('.productID').val();
+                    let quantity = card.find('.quantity-input').val();
+                    const token = localStorage.getItem('token');
+                    const decodedToken = jwt_decode(token);
+                    const userEmail = decodedToken.sub;
+                    console.log("Emaaail",userEmail)
+
+                    $.ajax({
+                        url: 'http://localhost:8080/api/v1/cart/cartSave',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            productId: productID,
+                            email: userEmail,
+                            quantity: quantity
+                        }),
+                        success: function(response) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Added to Cart',
+                                text: response.message,
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: xhr.responseJSON.message || 'Failed to add to cart'
+                            });
+                        }
+                    });
+                });
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

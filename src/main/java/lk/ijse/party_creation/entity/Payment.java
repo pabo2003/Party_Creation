@@ -1,4 +1,3 @@
-/*
 package lk.ijse.party_creation.entity;
 
 import jakarta.persistence.*;
@@ -16,15 +15,14 @@ public class Payment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int paymentID;
 
-    @Column(nullable = false)
-    private int orderID;
-
-    @Column(nullable = false)
-    private int userID;
+    @OneToOne
+    @JoinColumn(name = "orderDetailID", nullable = false, referencedColumnName = "orderDetailID")
+    private OrderDetail orderDetail;
 
     @Column(nullable = false)
     private String paymentMethod;
 
     @Column(nullable = false)
     private Double amount;
-}*/
+    private String userEmail;
+}
